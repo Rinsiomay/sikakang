@@ -12,16 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('dosen_details', function (Blueprint $table) {
-            $table->id();
-            $table->integer('nidn');
-            $table->string('nama_lengkap');
-            $table->string('email')->unique();
-            $table->enum('role', ['mahasiswa','dosen','admin'])->default('mahasiswa');
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
-            $table->timestamps();
-
+            $table->id('user_id');
+            $table->string('nidn')->nullable();
+            $table->string('jabatan_fungsional')->nullable();
+            $table->string('bidang_keahlian')->nullable();
+            $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
         });
     }
 
@@ -30,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('dosen_details');
     }
 };
