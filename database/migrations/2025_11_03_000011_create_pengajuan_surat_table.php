@@ -25,7 +25,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('mahasiswa_user_id')
-                  ->references('user_id')->on('mahasiswa_details')
+                  ->references('user_id')->on('users')
                   ->onDelete('set null');
 
             $table->foreign('jenis_surat_id')
@@ -33,7 +33,7 @@ return new class extends Migration
                   ->onDelete('set null');
 
             $table->foreign('dosen_pa_id')
-                  ->references('user_id')->on('dosen_details')
+                  ->references('user_id')->on('users')
                   ->onDelete('set null');
         });
     }

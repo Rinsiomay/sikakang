@@ -25,7 +25,7 @@ return new class extends Migration
                 ->onDelete('set null');
 
             $table->foreign('mahasiswa_user_id')
-                ->references('user_id')->on('mahasiswa_details')
+                ->references('user_id')->on('users')
                 ->onDelete('set null');
         });
     }

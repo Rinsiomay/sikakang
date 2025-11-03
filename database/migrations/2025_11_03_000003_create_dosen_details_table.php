@@ -12,11 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('dosen_details', function (Blueprint $table) {
-            $table->id('user_id');
+            $table->unsignedBigInteger('user_id')->primary();
             $table->string('nidn')->nullable();
             $table->string('jabatan_fungsional')->nullable();
             $table->string('bidang_keahlian')->nullable();
-            $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
+
+            $table->foreign('user_id')
+                  ->references('user_id')->on('users')
+                  ->onDelete('cascade');
         });
     }
 

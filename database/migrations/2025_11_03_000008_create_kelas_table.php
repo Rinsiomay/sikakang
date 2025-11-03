@@ -26,7 +26,7 @@ return new class extends Migration
                   ->onDelete('set null');
 
             $table->foreign('dosen_pengampu_id')
-                  ->references('user_id')->on('dosen_details')
+                  ->references('user_id')->on('users')
                   ->onDelete('set null');
         });
     }
