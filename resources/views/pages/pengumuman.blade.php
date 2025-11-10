@@ -21,7 +21,7 @@
     ?>
 
     <!-- Hero Section -->
-    <section class="relative min-h-[80vh] flex items-center">
+        <section class="relative min-h-[100vh] flex items-center">
         <!-- Background image with gray filter -->
         <div class="absolute inset-0 z-0">
             <img src="/images/image.png" alt="Background Skincare" class="w-full h-full object-cover filter grayscale-50">
@@ -73,7 +73,7 @@
                     Selamat datang di website resmi
                 </p>
                 <h1 class="text-5xl md:text-7xl font-bold leading-tight mb-6">
-                   Universitas Sultan Ageng Tirtayasa
+                Universitas Sultan Ageng Tirtayasa
                 </h1>
                 <p class="text-5xl md:text-3xl font-bold leading-tight mb-6">
                     Jujur, Adil, Wibawa, Religius, dan Akuntabel
