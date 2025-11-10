@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DosenController;
 use App\Http\Controllers\HasilStudiController;
 use App\Http\Controllers\KrsController;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,17 @@ Route::get('/dashboard', function () {
 Route::get('/krs', [KrsController::class, 'index']);
 Route::get('/hasil', [HasilStudiController::class, 'index']);
 
+// Route::middleware(['auth', 'verified'])->group(function () {
+//     // ... route lainnya
+
+//     // Route untuk Dashboard Dosen
+//     Route::get('/dosen/dashboard', [DosenController::class, 'dashboard'])->name('dosen.dashboard');
+// });
+Route::get('/dosen/dashboard', [DosenController::class, 'dashboard'])->name('dosen.dashboard');
+
+Route::get('/dosen/dashboard', function () {
+    return view('Dashboard.dashboard_dosen');
+});
 Route::get('/dosen', function () {
     return view('Profile.Profile_dosen');
 });
