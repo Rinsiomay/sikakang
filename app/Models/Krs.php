@@ -11,6 +11,14 @@ class Krs extends Model
 
     protected $table = 'krs';
     protected $primaryKey = 'krs_id';
+    protected $fillable = [
+        'mahasiswa_user_id',
+        'kelas_id',
+        'nilai_akhir_huruf',
+        'nilai_akhir_angka',
+        'status_krs',
+        'tanggal_ambil',
+    ];
 
     /**
      * Get the user that owns the krs.

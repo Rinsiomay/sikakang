@@ -13,6 +13,14 @@ class MahasiswaDetail extends Model
     protected $primaryKey = 'user_id';
     public $incrementing = false;
 
+    protected $fillable = [
+        'nim',
+        'dosen_pa_id',
+        'angkatan',
+        'program_studi',
+        'status_mahasiswa',
+    ];
+
     /**
      * Get the user that owns the detail.
      */
