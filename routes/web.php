@@ -89,3 +89,11 @@ Route::post('/profile/mahasiswa/update', function () {
     // Di sini nantinya simpan ke database. Untuk demo, langsung kirim pesan sukses.
     return redirect()->back()->with('success', 'Data sudah diperbarui');
 })->name('profile.update');
+
+Route::get('/mycourse', function () {
+    return view('courses.mycourse');
+});
+
+Route::get('/incourse', function () {
+    return view('courses.detailcourse');
+});
