@@ -87,7 +87,6 @@
                 </button>
                 <ul x-show="openMenu === 2" x-collapse class="pl-14 space-y-1 text-sm mt-1">
                     <li><a href="#" class="block py-1 hover:text-[#FFE05E]">Tugas Kuliah</a></li>
-                    <li><a href="#" class="block py-1 hover:text-[#FFE05E]">Tugas Pribadi</a></li>
                 </ul>
             </li>
 
@@ -111,7 +110,8 @@
             <hr class="text-slate-500 mt-5 mb-5">
             <li class="flex items-center p-2">
                 <img src="{{ url('images/profile.svg') }}" alt="" srcset="">
-                <a href="/profile/mahasiswa" class="ms-7 text-slate-500 text-left {{ Request::is('profile/mahasiswa') ? 'text-[#FFE05E] font-semibold' : 'hover:text-[#FFE05E]' }}">
+                <a href="/profile/mahasiswa"
+                    class="ms-7 text-slate-500 text-left {{ Request::is('profile/mahasiswa') ? 'text-[#FFE05E] font-semibold' : 'hover:text-[#FFE05E]' }}">
                     Profile
                 </a>
             </li>
