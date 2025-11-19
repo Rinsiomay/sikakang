@@ -54,15 +54,13 @@
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <div class="flex items-center space-x-2">
-                        <div class="flex flex-col items-end"> <span
-                                class="text-sm font-medium text-gray-700">{{ Auth::user()->nama_lengkap ?? 'Admin' }}</span>
-                            <span class="text-xs text-gray-500">Koordinator Program Studi</span>
-                        </div> <a href="/profile/admin" class="relative"> <img
-                                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80"
-                                alt="Profile Picture"
-                                class="w-10 h-10 rounded-full object-cover border-2 border-yellow-400"> </a>
-                    </div>
+                    <div class="flex flex-col items-end"> <span
+                            class="text-sm font-medium text-gray-700">{{ Auth::user()->nama_lengkap ?? 'Admin' }}</span>
+                        <span class="text-xs text-gray-500">Koordinator Program Studi</span>
+                    </div> <a href="/profile/admin" class="relative"> <img
+                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80"
+                            alt="Profile Picture"
+                            class="w-10 h-10 rounded-full object-cover border-2 border-yellow-400"> </a>
                 </div>
             </div>
         </nav>
@@ -155,6 +153,8 @@
                             kelas: "A",
                             jenjang: "S1",
                             status: "Aktif",
+                            waktu: "Senin, 08:00 - 10:30",
+                            kapasitas: 40,
                             deskripsi: "Mata kuliah dasar pemrograman dan algoritma"
                         }, {
                             id: 2,
@@ -168,6 +168,8 @@
                             kelas: "B",
                             jenjang: "S1",
                             status: "Aktif",
+                            waktu: "Selasa, 13:00 - 15:30",
+                            kapasitas: 40,
                             deskripsi: "Mata kuliah dasar pemrograman dan algoritma"
                         }, {
                             id: 3,
@@ -181,6 +183,8 @@
                             kelas: "A",
                             jenjang: "S1",
                             status: "Aktif",
+                            waktu: "Rabu, 09:00 - 12:00",
+                            kapasitas: 50,
                             deskripsi: "Konsep dan implementasi sistem basis data"
                         }, {
                             id: 4,
@@ -194,6 +198,8 @@
                             kelas: "Internasional",
                             jenjang: "S1",
                             status: "Aktif",
+                            waktu: "Kamis, 10:00 - 12:30",
+                            kapasitas: 30,
                             deskripsi: "Pengenalan machine learning dan aplikasinya"
                         }, {
                             id: 5,
@@ -207,6 +213,8 @@
                             kelas: "C",
                             jenjang: "S1",
                             status: "Nonaktif",
+                            waktu: "Jumat, 08:00 - 11:00",
+                            kapasitas: 45,
                             deskripsi: "Fundamental jaringan komputer dan protokol"
                         }],
                         // Data Kurikulum
@@ -252,6 +260,11 @@
                         "Dr. Joko Widodo, M.Kom."
                     ];
 
+                    const daysOptions = [
+                        "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"
+                    ];
+
+
                     // DOM Elements
                     const channelBtns = document.querySelectorAll('.channel-btn');
                     const viewSelector = document.getElementById('viewSelector');
@@ -273,6 +286,8 @@
                     let isEditing = false;
 
                     // --- Form Templates ---
+
+                    // Template MK memiliki placeholder waktu
                     const formMK = `
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div> <label for="kode" class="block text-sm font-medium text-gray-700 mb-1">Kode Mata Kuliah</label> <input type="text" id="kode" name="kode" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500" required> </div>
@@ -331,6 +346,10 @@
                                 <p class="text-xs text-gray-500 mt-1">Sistem akan membuat Kelas A, B, C, dst.</p>
                             </div>
                         </div>
+
+                        <div id="classTimeInputs" class="space-y-3 p-4 border border-yellow-200 rounded-lg bg-yellow-50/50">
+                            </div>
+
                         <div> <label for="deskripsi" class="block text-sm font-medium text-gray-700 mb-1">Deskripsi Mata Kuliah</label>
                             <textarea id="deskripsi" name="deskripsi" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500" placeholder="Deskripsi singkat tentang mata kuliah..."></textarea>
                         </div>
@@ -381,22 +400,18 @@
                     // --- Initialization and Helper Functions (Dosen/Angkatan) ---
 
                     function initializeTable() {
-                        // Set default form content on load
                         formContent.innerHTML = formMK;
                         populateAngkatanOptions();
                         populateDosenOptions();
+                        generateClassTimeInputs(1);
                         renderTable();
                         setupEventListeners();
                     }
 
                     function populateAngkatanOptions() {
-                        // Only populate if the select element exists (i.e. MK form is loaded)
                         const angkatanSelect = document.getElementById('angkatan');
                         if (!angkatanSelect) return;
-
-                        // Clear existing options
                         angkatanSelect.innerHTML = '<option value="">Pilih Angkatan</option>';
-
                         const currentYear = new Date().getFullYear();
                         for (let year = currentYear; year >= currentYear - 5; year--) {
                             const option = document.createElement('option');
@@ -407,13 +422,9 @@
                     }
 
                     function populateDosenOptions() {
-                        // Only populate if the select element exists (i.e. MK form is loaded)
                         const dosenSelect = document.getElementById('dosen');
                         if (!dosenSelect) return;
-
-                        // Clear existing options
                         dosenSelect.innerHTML = '<option value="">Pilih Dosen</option>';
-
                         dosenOptions.forEach(dosen => {
                             const option = document.createElement('option');
                             option.value = dosen;
@@ -421,6 +432,61 @@
                             dosenSelect.appendChild(option);
                         });
                     }
+
+                    // FUNGSI BARU: Generate Input Waktu & Kapasitas Kelas
+                    function generateClassTimeInputs(count) {
+                        const container = document.getElementById('classTimeInputs');
+                        if (!container) return;
+
+                        container.innerHTML =
+                            `<h4 class="font-bold text-sm text-gray-700">Detail Kelas (Waktu & Kapasitas):</h4>`;
+
+                        if (count > 0) {
+                            // Header kolom dalam input modal
+                            const header = `
+                                <div class="grid grid-cols-4 gap-2 text-xs font-semibold text-gray-600 mb-1 border-b pb-1">
+                                    <div class="col-span-1">Hari</div>
+                                    <div class="col-span-1">Mulai</div>
+                                    <div class="col-span-1">Selesai</div>
+                                    <div class="col-span-1">Kapasitas</div>
+                                </div>
+                            `;
+                            container.innerHTML += header;
+
+                            for (let i = 0; i < count; i++) {
+                                const namaKelas = String.fromCharCode(65 + i);
+
+                                // Opsi Hari
+                                let dayOptionsHtml = daysOptions.map(day =>
+                                    `<option value="${day}">${day}</option>`
+                                ).join('');
+
+                                const inputHtml = `
+                                    <div class="space-y-1">
+                                        <label class="block text-xs font-semibold text-gray-600">Kelas ${namaKelas}</label>
+                                        <div class="grid grid-cols-4 gap-2">
+                                            <select name="waktu_hari_${namaKelas}" required
+                                                class="col-span-1 px-2 py-2 border border-yellow-300 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 text-sm">
+                                                <option value="">Pilih Hari</option>
+                                                ${dayOptionsHtml}
+                                            </select>
+                                            <input type="time" name="waktu_mulai_${namaKelas}" required
+                                                class="col-span-1 px-2 py-2 border border-yellow-300 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 text-sm"
+                                                title="Jam Mulai">
+                                            <input type="time" name="waktu_selesai_${namaKelas}" required
+                                                class="col-span-1 px-2 py-2 border border-yellow-300 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 text-sm"
+                                                title="Jam Selesai">
+                                            <input type="number" name="kapasitas_${namaKelas}" required min="10" max="100" value="40"
+                                                class="col-span-1 px-2 py-2 border border-yellow-300 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 text-sm"
+                                                placeholder="Kapasitas" title="Kapasitas Kelas">
+                                        </div>
+                                    </div>
+                                `;
+                                container.innerHTML += inputHtml;
+                            }
+                        }
+                    }
+
 
                     // --- Render Tables ---
 
@@ -434,9 +500,10 @@
                                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Mata Kuliah</th>
                                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SKS</th>
                                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Semester</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kelas & Waktu</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kapasitas</th>
                                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dosen Pengampu</th>
                                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Angkatan</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kelas</th>
                                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                                 </tr>
@@ -461,7 +528,8 @@
                             document.getElementById('endItem').textContent = 0;
                             document.getElementById('totalItems').textContent = 0;
 
-                            const colspanCount = currentChannel === 'matakuliah' ? 9 : 7;
+                            // Perhatikan colspan count telah bertambah 1 karena kolom Kapasitas
+                            const colspanCount = currentChannel === 'matakuliah' ? 10 : 7;
                             dataTableBody.innerHTML = `
                                 <tr>
                                     <td colspan="${colspanCount}" class="px-4 py-8 text-center text-gray-500">
@@ -484,7 +552,6 @@
                             const row = document.createElement('tr');
                             row.className = 'hover:bg-gray-50 transition-colors';
 
-                            // Determine status badge class
                             let statusClass = '';
                             if (item.status === 'Aktif') {
                                 statusClass = 'status-aktif';
@@ -503,11 +570,15 @@
                                     </td>
                                     <td class="px-4 py-3 text-sm text-gray-700">${item.sks} SKS</td>
                                     <td class="px-4 py-3 text-sm">
-                                        <span class="px-2 py-1 rounded-full text-xs font-medium semester-badge">Semester ${item.semester}</span>
+                                        <span class="px-2 py-1 rounded-full text-xs font-medium semester-badge">Sem. ${item.semester}</span>
                                     </td>
+                                    <td class="px-4 py-3 text-sm text-gray-700">
+                                        <div class="font-medium">Kelas ${item.kelas}</div>
+                                        <div class="text-xs text-gray-500">${item.waktu || 'Belum diatur'}</div>
+                                    </td>
+                                    <td class="px-4 py-3 text-sm text-gray-700 font-medium">${item.kapasitas}</td>
                                     <td class="px-4 py-3 text-sm text-gray-700">${item.dosen}</td>
                                     <td class="px-4 py-3 text-sm text-gray-700">${item.angkatan}</td>
-                                    <td class="px-4 py-3 text-sm text-gray-700">${item.kelas}</td>
                                     <td class="px-4 py-3 text-sm">
                                         <span class="px-2 py-1 rounded-full text-xs font-medium ${statusClass}">${item.status}</span>
                                     </td>
@@ -554,7 +625,6 @@
                             btn.addEventListener('click', function() {
                                 const channel = this.id.replace('Btn', '');
                                 switchChannel(channel);
-                                // Update active button
                                 channelBtns.forEach(b => b.classList.remove('active-channel'));
                                 this.classList.add('active-channel');
                             });
@@ -568,12 +638,25 @@
 
                             if (currentChannel === 'matakuliah') {
                                 modalTitle.textContent = 'Tambah Mata Kuliah';
-                                formContent.innerHTML = formMK; // Set MK Form
-                                populateDosenOptions(); // Repopulate options
-                                populateAngkatanOptions(); // Repopulate options
+                                formContent.innerHTML = formMK;
+                                populateDosenOptions();
+                                populateAngkatanOptions();
+
+                                // Initialize class time inputs for default value (1)
+                                generateClassTimeInputs(1);
+
+                                // Attach change listener to jumlah_kelas
+                                const jumlahKelasInput = document.getElementById('jumlah_kelas');
+                                if (jumlahKelasInput) {
+                                    jumlahKelasInput.addEventListener('input', function() {
+                                        const count = parseInt(this.value) || 0;
+                                        generateClassTimeInputs(count);
+                                    });
+                                }
+
                             } else if (currentChannel === 'kurikulum') {
                                 modalTitle.textContent = 'Tambah Kurikulum';
-                                formContent.innerHTML = formKurikulum; // Set Kurikulum Form
+                                formContent.innerHTML = formKurikulum;
                             }
 
                             dataModal.classList.remove('hidden');
@@ -607,7 +690,6 @@
                     // Switch between channels
                     function switchChannel(channel) {
                         currentChannel = channel;
-                        // Update table title and add button text
                         const titles = {
                             matakuliah: 'Data Mata Kuliah',
                             kurikulum: 'Data Kurikulum'
@@ -618,7 +700,6 @@
                         };
                         tableTitle.textContent = titles[channel] || 'Data';
                         addBtn.innerHTML = `<i class="fas fa-plus mr-2"></i>${buttonTexts[channel] || 'Tambah Data'}`;
-                        // Update data
                         currentData = [...sampleData[channel]];
                         renderTable();
 
@@ -627,12 +708,13 @@
                             formContent.innerHTML = formMK;
                             populateDosenOptions();
                             populateAngkatanOptions();
+                            generateClassTimeInputs(1); // Default generate 1 class time input
                         } else if (currentChannel === 'kurikulum') {
                             formContent.innerHTML = formKurikulum;
                         }
                     }
 
-                    // Edit data
+                    // Edit data (Logika MK dibatasi untuk edit di demo)
                     function editData(id) {
                         const item = currentData.find(d => d.id === id);
                         if (!item) return;
@@ -642,39 +724,11 @@
                         dataForm.reset();
 
                         if (currentChannel === 'matakuliah') {
-                            // Cek apakah data ini adalah hasil generate, kita batasi edit di mode demo
-                            if (item.kelas.length === 1 && item.kelas >= 'A' && item.kelas <=
-                                'J') { // A-J as max 10 classes
-                                alert(
-                                    'Edit untuk Mata Kuliah yang dibuat otomatis dinonaktifkan. Silakan hapus dan buat ulang.'
-                                    );
+                            if (item.kelas.length === 1 && item.kelas >= 'A' && item.kelas <= 'J') {
+                                alert('Edit Mata Kuliah dinonaktifkan. Silakan hapus dan buat ulang.');
                                 isEditing = false;
                                 return;
                             }
-
-                            modalTitle.textContent = 'Edit Mata Kuliah';
-                            formContent.innerHTML = formMK;
-                            populateDosenOptions();
-                            populateAngkatanOptions();
-
-                            // Fill MK form (hanya yang bisa diedit)
-                            document.getElementById('kode').value = item.kode;
-                            document.getElementById('nama').value = item.nama;
-                            document.getElementById('sks').value = item.sks;
-                            document.getElementById('semester').value = item.semester;
-                            document.getElementById('dosen').value = item.dosen;
-                            document.getElementById('prodi').value = item.prodi;
-                            document.getElementById('angkatan').value = item.angkatan;
-                            // Catatan: Karena ini edit, kita tidak memerlukan input 'jumlah_kelas',
-                            // tetapi untuk menjaga form tetap valid, kita set 1 (atau sembunyikan field ini di real app)
-                            const jumlahKelasInput = document.getElementById('jumlah_kelas');
-                            if (jumlahKelasInput) jumlahKelasInput.value = 1;
-
-                            document.getElementById('jenjang').value = item.jenjang;
-                            document.getElementById('deskripsi').value = item.deskripsi;
-                            document.getElementById('status').value = item.status;
-                            dataModal.classList.remove('hidden');
-
                         } else if (currentChannel === 'kurikulum') {
                             modalTitle.textContent = 'Edit Kurikulum';
                             formContent.innerHTML = formKurikulum;
@@ -698,22 +752,35 @@
 
                         if (currentChannel === 'matakuliah') {
                             const jumlahKelas = parseInt(formData.get('jumlah_kelas'));
-                            // Jika mode Edit MK (yang dibatasi)
                             if (isEditing) {
                                 alert('Fitur edit Mata Kuliah dalam mode demo dinonaktifkan.');
                                 closeModalFunc();
                                 return;
                             }
 
-                            // --- Logic Generate Kelas (A, B, C, ...) ---
+                            // --- Logic Generate Kelas dan Waktu ---
                             let nextId = currentData.length > 0 ? Math.max(...currentData.map(d => d.id)) + 1 : 1;
 
                             for (let i = 0; i < jumlahKelas; i++) {
-                                // Generate nama kelas (A=65, B=66, C=67, ...)
                                 const namaKelas = String.fromCharCode(65 + i);
+                                const waktuHari = formData.get(`waktu_hari_${namaKelas}`);
+                                const waktuMulai = formData.get(`waktu_mulai_${namaKelas}`);
+                                const waktuSelesai = formData.get(`waktu_selesai_${namaKelas}`);
+                                const kapasitasKelas = parseInt(formData.get(`kapasitas_${namaKelas}`));
+
+                                // Validasi
+                                if (!waktuHari || !waktuMulai || !waktuSelesai || isNaN(kapasitasKelas) || kapasitasKelas <
+                                    10) {
+                                    alert(
+                                        `Hari, Jam Mulai, Jam Selesai, dan Kapasitas (minimal 10) untuk Kelas ${namaKelas} harus diisi dengan benar.`);
+                                    return; // Stop saving
+                                }
+
+                                // Format Waktu: "Senin, 08:00 - 10:30"
+                                const waktuFormatted = `${waktuHari}, ${waktuMulai} - ${waktuSelesai}`;
 
                                 const newItem = {
-                                    id: nextId++, // ID unik
+                                    id: nextId++,
                                     kode: formData.get('kode'),
                                     nama: formData.get('nama'),
                                     sks: formData.get('sks'),
@@ -721,7 +788,9 @@
                                     dosen: formData.get('dosen'),
                                     prodi: formData.get('prodi'),
                                     angkatan: formData.get('angkatan'),
-                                    kelas: namaKelas, // Kelas di-generate
+                                    kelas: namaKelas,
+                                    waktu: waktuFormatted,
+                                    kapasitas: kapasitasKelas, // Simpan Kapasitas
                                     jenjang: formData.get('jenjang'),
                                     deskripsi: formData.get('deskripsi'),
                                     status: formData.get('status')
@@ -729,7 +798,7 @@
                                 newItems.push(newItem);
                             }
                         } else if (currentChannel === 'kurikulum') {
-                            // Logika Kurikulum
+                            // Logika Kurikulum (tidak berubah)
                             const newItem = {
                                 id: isEditing ? parseInt(formData.get('id')) : (Math.max(...currentData.map(d => d
                                     .id)) + 1 || 101),
@@ -741,28 +810,24 @@
                                 deskripsi: formData.get('deskripsi_kur'),
                                 status: formData.get('status_kur')
                             };
-                            newItems.push(newItem); // Hanya 1 item untuk Kurikulum
+                            newItems.push(newItem);
                         }
 
                         // --- Menyimpan data ke State Demo ---
                         if (isEditing && currentChannel === 'kurikulum') {
-                            // Update existing Kurikulum item
                             const index = currentData.findIndex(item => item.id === newItems[0].id);
                             if (index !== -1) {
                                 currentData[index] = newItems[0];
                                 alert('Data Kurikulum diperbarui!');
                             }
                         } else if (currentChannel === 'matakuliah' && !isEditing) {
-                            // Tambahkan semua item Mata Kuliah yang digenerate
                             newItems.forEach(item => {
                                 currentData.push(item);
                                 sampleData[currentChannel].push(item);
                             });
                             alert(
-                                `${newItems.length} Mata Kuliah berhasil ditambahkan (Kelas A sampai ${String.fromCharCode(65 + newItems.length - 1)})!`
-                                );
+                                `${newItems.length} Mata Kuliah berhasil ditambahkan (Kelas A sampai ${String.fromCharCode(65 + newItems.length - 1)})!`);
                         } else if (currentChannel === 'kurikulum' && !isEditing) {
-                            // Tambahkan item Kurikulum baru
                             currentData.push(newItems[0]);
                             sampleData[currentChannel].push(newItems[0]);
                             alert('Data Kurikulum ditambahkan!');
@@ -772,20 +837,17 @@
                         closeModalFunc();
                     }
 
-                    // Delete data
+                    // Delete data (tidak berubah)
                     function deleteData(id) {
                         if (confirm('Apakah Anda yakin ingin menghapus data ini?')) {
-                            // Filter current data
                             currentData = currentData.filter(item => item.id !== id);
-                            // Filter sample data
                             sampleData[currentChannel] = sampleData[currentChannel].filter(item => item.id !== id);
-
                             renderTable();
                             alert('Data dihapus!');
                         }
                     }
 
-                    // Close modal
+                    // Close modal (tidak berubah)
                     function closeModalFunc() {
                         dataModal.classList.add('hidden');
                     }

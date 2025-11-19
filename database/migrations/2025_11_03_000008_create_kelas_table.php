@@ -19,15 +19,18 @@ return new class extends Migration
             $table->string('tahun_ajar')->nullable();
             $table->enum('semester', ['ganjil', 'genap'])->nullable();
             $table->integer('kapasitas')->nullable();
+            $table->time('jam_mulai');
+            $table->time('jam_selesai');
+            $table->string('hari');
             $table->timestamps();
 
             $table->foreign('mk_id')
-                  ->references('mk_id')->on('mata_kuliah')
-                  ->onDelete('set null');
+                ->references('mk_id')->on('mata_kuliah')
+                ->onDelete('set null');
 
             $table->foreign('dosen_pengampu_id')
-                  ->references('user_id')->on('users')
-                  ->onDelete('set null');
+                ->references('user_id')->on('users')
+                ->onDelete('set null');
         });
     }
 
