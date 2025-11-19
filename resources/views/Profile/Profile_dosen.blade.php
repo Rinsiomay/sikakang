@@ -81,8 +81,8 @@
             <div class="bg-white border border-yellow-100 rounded-2xl p-6 shadow-sm">
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-lg sm:text-xl font-extrabold">Detail Dosen</h2>
-                    @php($editUrl = Route::has('dosen.edit') ? route('dosen.edit') : '#')
-                    <a href="{{ $editUrl }}" class="inline-flex items-center gap-2 text-yellow-600 hover:text-yellow-700 bg-yellow-100 hover:bg-yellow-200 transition px-3 py-2 rounded-lg">
+                    @php($editUrl = Route::has('dosen.edit') ? route('dosen.edit', $d->id ?? null) : '#')
+                    <a href="{{ $d->id ?? false ? $editUrl : '#' }}" class="inline-flex items-center gap-2 text-yellow-600 hover:text-yellow-700 bg-yellow-100 hover:bg-yellow-200 transition px-3 py-2 rounded-lg {{ empty($d->id) ? 'pointer-events-none opacity-60' : '' }}">
                         <i class="fa-solid fa-pen-to-square"></i>
                         <span class="font-semibold text-sm">Edit</span>
                     </a>

@@ -16,11 +16,20 @@
             this.moveTo(el);
             this.fading = true;
             setTimeout(() => window.location.href = el.href, 220);
+        },
+        init() {
+            this.$nextTick(() => {
+                setTimeout(() => {
+                    const active = document.querySelector('[data-tab={{ json_encode($active) }}]');
+                    this.moveTo(active);
+                }, 50);
+            });
+            window.addEventListener('resize', () => {
+                const active = document.querySelector('[data-tab={{ json_encode($active) }}]');
+                this.moveTo(active);
+            });
         }
-    }" x-init="$nextTick(() => {
-        const active = document.querySelector('[data-tab={{ json_encode($active) }}]');
-        moveTo(active);
-    })" class="space-y-6">
+    }" class="space-y-6">
         <!-- Header -->
         <div class="flex items-center justify-between">
             <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-800 tracking-tight">Profile Mahasiswa</h1>
@@ -36,25 +45,25 @@
         </div>
 
         <!-- Tabs -->
-        <div class="bg-white/80 backdrop-blur rounded-xl border border-gray-100 shadow-sm">
-            <div x-ref="tablist" class="relative flex gap-2 sm:gap-4 p-2 sm:p-3 overflow-x-auto">
+        <div class="bg-white/80 backdrop-blur rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+            <div x-ref="tablist" class="relative flex gap-2 sm:gap-4 px-2 sm:px-3 pt-2 sm:pt-3 overflow-x-auto">
                 <a data-tab="data" href="{{ url('/profile/mahasiswa') }}?tab=data" @click.prevent="go($el)"
-                    class="relative flex items-center text-sm md:text-md gap-2 px-4 py-2 rounded-lg transition-colors {{ $active === 'data' ? 'text-yellow-600' : 'text-gray-500 hover:text-yellow-600 hover:bg-yellow-50' }}">
+                    class="relative flex items-center text-sm md:text-md gap-2 px-4 py-3 rounded-t-lg transition-colors whitespace-nowrap {{ $active === 'data' ? 'text-yellow-600' : 'text-gray-500 hover:text-yellow-600 hover:bg-yellow-50' }}">
                     <i class="fa-solid fa-user text-lg"></i>
                     <span class="font-semibold">Data Pribadi</span>
                 </a>
                 <a data-tab="akademik" href="{{ url('/profile/mahasiswa') }}?tab=akademik" @click.prevent="go($el)"
-                    class="relative flex items-center text-sm md:text-md gap-2 px-4 py-2 rounded-lg transition-colors {{ $active === 'akademik' ? 'text-yellow-600' : 'text-gray-500 hover:text-yellow-600 hover:bg-yellow-50' }}">
+                    class="relative flex items-center text-sm md:text-md gap-2 px-4 py-3 rounded-t-lg transition-colors whitespace-nowrap {{ $active === 'akademik' ? 'text-yellow-600' : 'text-gray-500 hover:text-yellow-600 hover:bg-yellow-50' }}">
                     <i class="fa-solid fa-book-open text-lg"></i>
                     <span class="font-semibold">Riwayat Akademik</span>
                 </a>
                 <a data-tab="registrasi" href="{{ url('/profile/mahasiswa') }}?tab=registrasi" @click.prevent="go($el)"
-                    class="relative flex items-center text-sm md:text-md gap-2 px-4 py-2 rounded-lg transition-colors {{ $active === 'registrasi' ? 'text-yellow-600' : 'text-gray-500 hover:text-yellow-600 hover:bg-yellow-50' }}">
+                    class="relative flex items-center text-sm md:text-md gap-2 px-4 py-3 rounded-t-lg transition-colors whitespace-nowrap {{ $active === 'registrasi' ? 'text-yellow-600' : 'text-gray-500 hover:text-yellow-600 hover:bg-yellow-50' }}">
                     <i class="fa-solid fa-receipt text-lg"></i>
                     <span class="font-semibold">Riwayat Registrasi</span>
                 </a>
-                <div class="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-100 rounded-b-xl"></div>
-                <div class="absolute bottom-0 h-[3px] rounded-full bg-gradient-to-r from-yellow-400 to-yellow-500 transition-all duration-300 ease-out"
+                <div class="absolute bottom-0 left-0 right-0 h-px bg-gray-200"></div>
+                <div class="absolute bottom-0 h-[3px] bg-gradient-to-r from-yellow-400 to-yellow-500 transition-all duration-300 ease-out"
                     :style="{ width: underline.width + 'px', transform: 'translateX(' + underline.left + 'px)' }"></div>
             </div>
         </div>

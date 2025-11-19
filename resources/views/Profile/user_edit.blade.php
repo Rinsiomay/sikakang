@@ -39,8 +39,8 @@
                         <i class="fa-solid fa-user text-yellow-600"></i>
                         Informasi Pribadi
                     </div>
-                    <div class="p-5 grid grid-cols-1 md:grid-cols-[220px_1fr] gap-4">
-                        <label class="md:text-right md:pr-3 py-2 font-semibold">Agama<span class="text-red-500">*</span></label>
+                    <div class="p-5 grid grid-cols-1 md:grid-cols-[220px_1fr] gap-4 [&_input]:px-4 [&_input]:py-2.5 [&_select]:px-4 [&_select]:py-2.5 [&_textarea]:px-4 [&_textarea]:py-2.5">
+                        <label class="md:text-right md:pr-3 py-2  font-semibold">Agama<span class="text-red-500">*</span></label>
                         <select name="agama" class="w-full rounded-xl border border-yellow-300 focus:ring-yellow-400 focus:border-yellow-400">
                             <option value="">-- Pilih Agama --</option>
                             @foreach ($opsiAgama as $opt)
@@ -88,7 +88,7 @@
                         <i class="fa-solid fa-location-dot text-yellow-600"></i>
                         Alamat
                     </div>
-                    <div class="p-5 grid grid-cols-1 md:grid-cols-[220px_1fr] gap-4">
+                    <div class="p-5 grid grid-cols-1 md:grid-cols-[220px_1fr] gap-4 [&_input]:px-4 [&_input]:py-2.5 [&_select]:px-4 [&_select]:py-2.5 [&_textarea]:px-4 [&_textarea]:py-2.5">
                         <label class="md:text-right md:pr-3 py-2 font-semibold">Alamat</label>
                         <textarea name="alamat" rows="2" placeholder="Masukkan Alamat..." class="w-full rounded-xl border border-yellow-300 focus:ring-yellow-400 focus:border-yellow-400">{{ old('alamat', $student->alamat ?? '') }}</textarea>
 
@@ -129,7 +129,7 @@
                         <i class="fa-solid fa-phone text-yellow-600"></i>
                         Kontak
                     </div>
-                    <div class="p-5 grid grid-cols-1 md:grid-cols-[220px_1fr] gap-4">
+                    <div class="p-5 grid grid-cols-1 md:grid-cols-[220px_1fr] gap-4 [&_input]:px-4 [&_input]:py-2.5 [&_select]:px-4 [&_select]:py-2.5 [&_textarea]:px-4 [&_textarea]:py-2.5">
                         <label class="md:text-right md:pr-3 py-2 font-semibold">E-mail<span class="text-red-500">*</span></label>
                         <input type="email" name="email" value="{{ old('email', $student->email ?? '') }}" placeholder="Masukkan E-mail..." class="w-full rounded-xl border border-yellow-300 focus:ring-yellow-400 focus:border-yellow-400" />
 

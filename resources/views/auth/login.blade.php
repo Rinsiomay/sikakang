@@ -23,23 +23,31 @@
                 <img src="{{ url('images/untirta.png') }}" alt="" width="70px">
             </div>
             <h2 class="text-center font-bold text-2xl">Universitas<br />Sultan Ageng Tirtayasa</h2>
-            <form action="" class="p-10">
+            <form action="{{ route('login.perform') }}" method="POST" class="p-10">
                 @csrf
-                <label for="username" class=" text-lg">Username</label><br>
-                <input type="text" placeholder="Masukkan Username"
-                    class="border-2 border-[#FFE05E] text-xl py-3 px-3 w-full rounded-lg mb-8 placeholder:italic
+                <label for="email" class=" text-lg">Email</label><br>
+                <input type="email" name="email" id="email" placeholder="Masukkan Email"
+                    value="{{ old('email') }}" required autofocus
+                    class="border-2 border-[#FFE05E] text-xl py-3 px-3 w-full rounded-lg mb-2 placeholder:italic
                             focus:outline-none focus:ring-0 focus:border-[#fed531]">
+                @error('email')
+                    <p class="text-red-500 text-sm mb-6">{{ $message }}</p>
+                @enderror
 
 
                 <label for="password" class="text-lg">Password</label><br>
-                <input type="password" placeholder="Masukkan Password"
-                    class="border-2 border-[#FFE05E] text-xl py-3 px-3 w-full rounded-lg mb-8 placeholder:italic
+                <input type="password" name="password" id="password" placeholder="Masukkan Password" required
+                    class="border-2 border-[#FFE05E] text-xl py-3 px-3 w-full rounded-lg mb-2 placeholder:italic
                             focus:outline-none focus:ring-0 focus:border-[#fed531]">
+                @error('password')
+                    <p class="text-red-500 text-sm mb-6">{{ $message }}</p>
+                @enderror
                 <button type="submit"
                     class="bg-[#FFE05E] font-semibold text-white text-xl py-3 px-3 w-full rounded-lg hover:cursor-pointer hover:bg-[#fed531]">Submit</button>
                 <div class="flex w-full">
                     <input type="checkbox" name="remember" id="remember"
-                        class="w-5 h-5 appearance-none border-2 border-gray-400 rounded-sm checked:bg-[#FFE05E] checked:border-[#FFE05E] transition-all duration-200 mt-3">
+                        class="w-5 h-5 appearance-none border-2 border-gray-400 rounded-sm checked:bg-[#FFE05E] checked:border-[#FFE05E] transition-all duration-200 mt-3"
+                        {{ old('remember') ? 'checked' : '' }}>
                     <label for="remember" class="font-semibold ps-3 mt-2 text-lg">Ingat Saya</label>
                     <a href="#" class="ml-auto mt-2 text-lg text-slate-400 hover:text-slate-700">Lupa
                         Password</a>
