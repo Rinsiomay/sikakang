@@ -15,11 +15,13 @@ class MahasiswaDetail extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'user_id',
         'nim',
         'dosen_pa_id',
         'angkatan',
         'program_studi',
         'status_mahasiswa',
+        'fakultas',
     ];
 
     /**

@@ -73,6 +73,11 @@ class User extends Authenticatable
         return $this->hasOne(MahasiswaDetail::class, 'user_id');
     }
 
+    public function dosenPa()
+    {
+        return $this->belongsTo(User::class, 'dosen_pa_id', 'user_id');
+    }
+
     /**
      * Get the dosen detail associated with the user.
      */

@@ -36,8 +36,13 @@
                 color: white;
             }
 
-            .status-cutim {
+            .status-cuti {
                 background-color: #f59e0b;
+                color: white;
+            }
+
+            .status-lulus {
+                background-color: #3b82f6;
                 color: white;
             }
         </style>
@@ -62,8 +67,7 @@
                     <!-- Profile Picture and Name -->
                     <div class="flex items-center space-x-2">
                         <div class="flex flex-col items-end">
-                            <span
-                                class="text-sm font-medium text-gray-700">{{ Auth::user()->nama_lengkap ?? 'Admin' }}</span>
+                            <span class="text-sm font-medium text-gray-700">{{ Auth::user()->name ?? 'Admin' }}</span>
                             <span class="text-xs text-gray-500">Administrator</span>
                         </div>
                         <a href="/profile/admin" class="relative">
@@ -152,11 +156,54 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200" id="dataTableBody">
-                                @foreach ($mhs as $m)
+                                @forelse ($mhs as $mahasiswa)
+                                    @php
+                                        $detail = $mahasiswa->mahasiswaDetail;
+                                        $status = $detail->status_mahasiswa ?? 'nonaktif';
+                                        $statusClass = match($status) {
+                                            'aktif' => 'status-aktif',
+                                            'cuti' => 'status-cuti',
+                                            'lulus' => 'status-lulus',
+                                            default => 'status-nonaktif'
+                                        };
+                                        $statusText = ucfirst($status);
+                                    @endphp
                                     <tr>
-                                        <td>{{ $m['id'] }}</td>
+                                        <td class="px-4 py-3">{{ $mahasiswa->user_id }}</td>
+                                        <td class="px-4 py-3">{{ $mahasiswa->nama_lengkap }}</td>
+                                        <td class="px-4 py-3 font-mono">{{ $detail->nim ?? '-' }}</td>
+                                        <td class="px-4 py-3">{{ $detail->fakultas ?? '-' }}</td>
+                                        <td class="px-4 py-3">{{ $detail->program_studi ?? '-' }}</td>
+                                        <td class="px-4 py-3">{{ $detail->angkatan ?? '-' }}</td>
+                                        <td class="px-4 py-3">
+                                            @if($detail && $detail->program_studi)
+                                                {{ str_contains(strtolower($detail->program_studi), 'd3') ? 'D3' : 
+                                                   (str_contains(strtolower($detail->program_studi), 's2') ? 'S2' : 
+                                                   (str_contains(strtolower($detail->program_studi), 's3') ? 'S3' : 'S1')) }}
+                                            @else
+                                                -
+                                            @endif
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            <span class="px-2 py-1 rounded text-white {{ $statusClass }}">{{ $statusText }}</span>
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            <button class="text-blue-600 hover:underline mr-3 editBtn" data-id="{{ $mahasiswa->user_id }}">
+                                                Edit
+                                            </button>
+                                            <button class="text-red-600 hover:underline deleteBtn" data-id="{{ $mahasiswa->user_id }}">
+                                                Hapus
+                                            </button>
+                                        </td>
                                     </tr>
-                                @endforeach
+                                @empty
+                                    <tr>
+                                        <td colspan="9" class="px-4 py-8 text-center text-gray-500">
+                                            <i class="fas fa-inbox text-4xl mb-2"></i>
+                                            <p>Tidak ada data</p>
+                                        </td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
@@ -164,8 +211,8 @@
                     <!-- Pagination (if needed) -->
                     <div class="px-4 py-3 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
                         <div class="text-sm text-gray-700">
-                            Menampilkan <span id="startItem">1</span> - <span id="endItem">5</span> dari <span
-                                id="totalItems">20</span> data
+                            Menampilkan <span id="startItem">1</span> - <span id="endItem">{{ $mhs->count() }}</span> dari <span
+                                id="totalItems">{{ $mhs->total() ?? $mhs->count() }}</span> data
                         </div>
                         <div class="flex space-x-2">
                             <button
@@ -192,11 +239,25 @@
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
-                <form id="dataForm" class="p-4 space-y-4" method="POST" action="{{ route('mahasiswa.store') }}">
+                <form id="dataForm" class="p-4 space-y-4" method="POST">
                     @csrf
+                    <div id="formMethod" style="display: none;"></div>
+                    
                     <div>
-                        <label for="nama" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
-                        <input type="text" id="nama" name="nama"
+                        <label for="nama_lengkap" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
+                        <input type="text" id="nama_lengkap" name="nama_lengkap"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
+                            required>
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <input type="email" id="email" name="email"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
+                            required>
+                    </div>
+                    <div id="passwordField">
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <input type="password" id="password" name="password"
                             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
                             required>
                     </div>
@@ -220,18 +281,15 @@
                         </select>
                     </div>
                     <div>
-                        <label for="prodi" class="block text-sm font-medium text-gray-700 mb-1">Program
-                            Studi</label>
-                        <select id="prodi" name="prodi"
+                        <label for="program_studi" class="block text-sm font-medium text-gray-700 mb-1">Program Studi</label>
+                        <select id="program_studi" name="program_studi"
                             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
                             required>
-
                         </select>
                     </div>
                     <div>
-                        <label for="tahunMasuk" class="block text-sm font-medium text-gray-700 mb-1">Tahun
-                            Masuk</label>
-                        <select id="tahunMasuk" name="tahunMasuk"
+                        <label for="angkatan" class="block text-sm font-medium text-gray-700 mb-1">Tahun Masuk</label>
+                        <select id="angkatan" name="angkatan"
                             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
                             required>
                             <option value="">Pilih Tahun Masuk</option>
@@ -239,26 +297,15 @@
                         </select>
                     </div>
                     <div>
-                        <label for="jenjang" class="block text-sm font-medium text-gray-700 mb-1">Jenjang</label>
-                        <select id="jenjang" name="jenjang"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
-                            required>
-                            <option value="">Pilih Jenjang</option>
-                            <option value="D3">D3</option>
-                            <option value="S1">S1</option>
-                            <option value="S2">S2</option>
-                            <option value="S3">S3</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                        <select id="status" name="status"
+                        <label for="status_mahasiswa" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                        <select id="status_mahasiswa" name="status_mahasiswa"
                             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
                             required>
                             <option value="">Pilih Status</option>
-                            <option value="Aktif">Aktif</option>
-                            <option value="Nonaktif">Nonaktif</option>
-                            <option value="Cuti">Cuti</option>
+                            <option value="aktif">Aktif</option>
+                            <option value="nonaktif">Nonaktif</option>
+                            <option value="cuti">Cuti</option>
+                            <option value="lulus">Lulus</option>
                         </select>
                     </div>
                     <div class="flex justify-end space-x-3 pt-4 sticky bottom-0 bg-white pb-2">
@@ -271,76 +318,26 @@
             </div>
         </div>
 
+        <!-- Success Message -->
+        @if(session('success'))
+        <div id="successMessage" class="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+            <div class="flex items-center">
+                <i class="fas fa-check-circle mr-2"></i>
+                <span>{{ session('success') }}</span>
+            </div>
+        </div>
+        @endif
+
         <script>
             document.getElementById('viewSelector').addEventListener('change', function() {
                 window.location.href = this.value;
             });
 
             document.addEventListener('DOMContentLoaded', function() {
-
-                // Sample Data (sementara)
-                const sampleData = {
-                    mahasiswa: [{
-                            id: 1,
-                            nama: "Ahmad Wijaya",
-                            nim: "202201001",
-                            fakultas: "Fakultas Ilmu Komputer",
-                            prodi: "Teknik Informatika",
-                            tahunMasuk: "2022",
-                            jenjang: "S1",
-                            status: "Aktif"
-                        },
-                        {
-                            id: 2,
-                            nama: "Siti Rahayu",
-                            nim: "202101002",
-                            fakultas: "Fakultas Ilmu Komputer",
-                            prodi: "Sistem Informasi",
-                            tahunMasuk: "2021",
-                            jenjang: "S1",
-                            status: "Aktif"
-                        },
-                        {
-                            id: 3,
-                            nama: "Budi Santoso",
-                            nim: "202001003",
-                            fakultas: "Fakultas Teknik",
-                            prodi: "Teknik Elektro",
-                            tahunMasuk: "2020",
-                            jenjang: "S1",
-                            status: "Cuti"
-                        },
-                        {
-                            id: 4,
-                            nama: "Maya Sari",
-                            nim: "201901004",
-                            fakultas: "Fakultas Ekonomi",
-                            prodi: "Manajemen",
-                            tahunMasuk: "2019",
-                            jenjang: "S1",
-                            status: "Nonaktif"
-                        },
-                        {
-                            id: 5,
-                            nama: "Rizki Pratama",
-                            nim: "202301005",
-                            fakultas: "Fakultas Ilmu Komputer",
-                            prodi: "Ilmu Komputer",
-                            tahunMasuk: "2023",
-                            jenjang: "S2",
-                            status: "Aktif"
-                        }
-                    ]
-                };
-
-                // Fakul­tas → Prodi Options
+                // Fakultas → Prodi Options
                 const prodiOptions = {
-                    "Fakultas Teknik": ["Teknik Elektro", "Teknik Mesin", "Teknik Sipil", "Teknik Kimia",
-                        "Teknik Industri"
-                    ],
-                    "Fakultas Ilmu Komputer": ["Teknik Informatika", "Sistem Informasi", "Ilmu Komputer",
-                        "Teknologi Informasi"
-                    ],
+                    "Fakultas Teknik": ["Teknik Elektro", "Teknik Mesin", "Teknik Sipil", "Teknik Kimia", "Teknik Industri"],
+                    "Fakultas Ilmu Komputer": ["Teknik Informatika", "Sistem Informasi", "Ilmu Komputer", "Teknologi Informasi"],
                     "Fakultas Ekonomi": ["Manajemen", "Akuntansi", "Ekonomi Pembangunan", "Ekonomi Syariah"],
                     "Fakultas Hukum": ["Ilmu Hukum", "Hukum Bisnis", "Hukum Internasional"],
                     "Fakultas Kedokteran": ["Pendidikan Dokter", "Kedokteran Gigi", "Farmasi", "Keperawatan"]
@@ -350,8 +347,6 @@
                 // VARIABLES
                 // ======================
 
-                let currentChannel = 'mahasiswa'; // ← COMMENT FIX
-                let currentData = [...sampleData.mahasiswa];
                 let isEditing = false;
                 let editingId = null;
 
@@ -362,14 +357,17 @@
                 const cancelBtn = document.getElementById('cancelBtn');
                 const modalTitle = document.getElementById('modalTitle');
                 const dataForm = document.getElementById('dataForm');
+                const formMethod = document.getElementById('formMethod');
+                const passwordField = document.getElementById('passwordField');
 
-                const namaInput = document.getElementById('nama');
+                const nameInput = document.getElementById('nama_lengkap');
+                const emailInput = document.getElementById('email');
+                const passwordInput = document.getElementById('password');
                 const nimInput = document.getElementById('nim');
                 const fakultasSelect = document.getElementById('fakultas');
-                const prodiSelect = document.getElementById('prodi');
-                const tahunMasukSelect = document.getElementById('tahunMasuk');
-                const jenjangSelect = document.getElementById('jenjang');
-                const statusSelect = document.getElementById('status');
+                const prodiSelect = document.getElementById('program_studi');
+                const angkatanSelect = document.getElementById('angkatan');
+                const statusSelect = document.getElementById('status_mahasiswa');
 
                 // ======================
                 // INIT
@@ -377,7 +375,7 @@
 
                 populateTahunMasukOptions();
                 setupFakultasProdiListener();
-                renderTable();
+                setupEventListeners();
 
                 // ======================
                 // FUNCTIONS
@@ -389,7 +387,7 @@
                         const opt = document.createElement('option');
                         opt.value = year;
                         opt.textContent = year;
-                        tahunMasukSelect.appendChild(opt);
+                        angkatanSelect.appendChild(opt);
                     }
                 }
 
@@ -406,93 +404,41 @@
                     });
                 }
 
-                function renderTable() {
-                    dataTableBody.innerHTML = "";
+                function setupEventListeners() {
+                    // Add button
+                    addBtn.addEventListener("click", openAddModal);
 
-                    if (currentData.length === 0) {
-                        dataTableBody.innerHTML = `
-                    <tr>
-                        <td colspan="9" class="px-4 py-8 text-center text-gray-500">
-                            <i class="fas fa-inbox text-4xl mb-2"></i>
-                            <p>Tidak ada data</p>
-                        </td>
-                    </tr>
-                `;
-                        return;
-                    }
+                    // Modal controls
+                    closeModal.addEventListener("click", () => dataModal.classList.add("hidden"));
+                    cancelBtn.addEventListener("click", () => dataModal.classList.add("hidden"));
 
-                    currentData.forEach(item => {
-                        let statusClass =
-                            item.status === "Aktif" ? "status-aktif" :
-                            item.status === "Nonaktif" ? "status-nonaktif" :
-                            "status-cutim";
-
-                        const tr = document.createElement("tr");
-
-                        tr.innerHTML = `
-                    <td class="px-4 py-3">${item.id}</td>
-                    <td class="px-4 py-3">${item.nama}</td>
-                    <td class="px-4 py-3 font-mono">${item.nim}</td>
-                    <td class="px-4 py-3">${item.fakultas}</td>
-                    <td class="px-4 py-3">${item.prodi}</td>
-                    <td class="px-4 py-3">${item.tahunMasuk}</td>
-                    <td class="px-4 py-3">${item.jenjang}</td>
-                    <td class="px-4 py-3">
-                        <span class="px-2 py-1 rounded text-white ${statusClass}">${item.status}</span>
-                    </td>
-                    <td class="px-4 py-3">
-                        <button class="text-blue-600 hover:underline mr-3 editBtn" data-id="${item.id}">
-                            Edit
-                        </button>
-                        <button class="text-red-600 hover:underline deleteBtn" data-id="${item.id}">
-                            Hapus
-                        </button>
-                    </td>
-                `;
-
-                        dataTableBody.appendChild(tr);
-                    });
-
-                    attachRowActions();
-                }
-
-                function attachRowActions() {
+                    // Edit buttons
                     document.querySelectorAll('.editBtn').forEach(btn => {
                         btn.addEventListener('click', function() {
-                            const id = parseInt(this.dataset.id);
+                            const id = this.dataset.id;
                             openEditModal(id);
                         });
                     });
 
+                    // Delete buttons
                     document.querySelectorAll('.deleteBtn').forEach(btn => {
                         btn.addEventListener('click', function() {
-                            const id = parseInt(this.dataset.id);
-                            currentData = currentData.filter(d => d.id !== id);
-                            renderTable();
+                            const id = this.dataset.id;
+                            if (confirm('Apakah Anda yakin ingin menghapus mahasiswa ini?')) {
+                                deleteMahasiswa(id);
+                            }
                         });
                     });
-                }
 
-                function openEditModal(id) {
-                    isEditing = true;
-                    editingId = id;
-
-                    const item = currentData.find(i => i.id === id);
-
-                    modalTitle.textContent = "Edit Data Mahasiswa";
-
-                    namaInput.value = item.nama;
-                    nimInput.value = item.nim;
-                    fakultasSelect.value = item.fakultas;
-
-                    fakultasSelect.dispatchEvent(new Event("change"));
-                    prodiSelect.value = item.prodi;
-
-                    tahunMasukSelect.value = item.tahunMasuk;
-                    jenjangSelect.value = item.jenjang;
-                    statusSelect.value = item.status;
-
-                    dataModal.classList.remove("hidden");
+                    // Form submission
+                    dataForm.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        if (isEditing) {
+                            updateMahasiswa();
+                        } else {
+                            createMahasiswa();
+                        }
+                    });
                 }
 
                 function openAddModal() {
@@ -501,35 +447,133 @@
 
                     modalTitle.textContent = "Tambah Data Mahasiswa";
                     dataForm.reset();
+                    dataForm.action = "{{ route('mahasiswa.store') }}";
+                    formMethod.innerHTML = '';
+                    passwordField.style.display = 'block';
+                    passwordInput.required = true;
                     prodiSelect.innerHTML = '<option value="">Pilih Program Studi</option>';
 
                     dataModal.classList.remove("hidden");
                 }
 
-                addBtn.addEventListener("click", openAddModal);
+                async function openEditModal(id) {
+                    try {
+                        isEditing = true;
+                        editingId = id;
 
-                closeModal.addEventListener("click", () => dataModal.classList.add("hidden"));
-                cancelBtn.addEventListener("click", () => dataModal.classList.add("hidden"));
+                        // Fetch mahasiswa data
+                        const response = await fetch(`/dashboard-admin/mahasiswa/${id}/edit`);
+                        const data = await response.json();
 
-                dataForm.addEventListener('submit', function(e) {
-                    if (!isEditing) return; // kalau bukan edit biarkan submit ke Laravel
+                        modalTitle.textContent = "Edit Data Mahasiswa";
+                        
+                        // Set form values
+                        nameInput.value = data.user.nama_lengkap;
+                        emailInput.value = data.user.email;
+                        nimInput.value = data.detail.nim || '';
+                        fakultasSelect.value = data.detail.fakultas || '';
+                        
+                        // Trigger program studi update
+                        fakultasSelect.dispatchEvent(new Event("change"));
+                        setTimeout(() => {
+                            prodiSelect.value = data.detail.program_studi || '';
+                        }, 100);
+                        
+                        angkatanSelect.value = data.detail.angkatan || '';
+                        statusSelect.value = data.detail.status_mahasiswa || '';
 
-                    e.preventDefault();
+                        // Update form action and method
+                        dataForm.action = `/dashboard-admin/mahasiswa/${id}`;
+                        formMethod.innerHTML = '@method("PUT")';
+                        passwordField.style.display = 'none';
+                        passwordInput.required = false;
 
-                    const updated = currentData.find(i => i.id === editingId);
+                        dataModal.classList.remove("hidden");
+                    } catch (error) {
+                        console.error('Error fetching mahasiswa data:', error);
+                        alert('Gagal memuat data mahasiswa');
+                    }
+                }
 
-                    updated.nama = namaInput.value;
-                    updated.nim = nimInput.value;
-                    updated.fakultas = fakultasSelect.value;
-                    updated.prodi = prodiSelect.value;
-                    updated.tahunMasuk = tahunMasukSelect.value;
-                    updated.jenjang = jenjangSelect.value;
-                    updated.status = statusSelect.value;
+                async function createMahasiswa() {
+                    try {
+                        const formData = new FormData(dataForm);
+                        const response = await fetch("{{ route('mahasiswa.store') }}", {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Accept': 'application/json',
+                            },
+                            body: formData
+                        });
 
-                    dataModal.classList.add("hidden");
-                    renderTable();
-                });
+                        if (response.ok) {
+                            window.location.reload();
+                        } else {
+                            const error = await response.json();
+                            alert('Gagal menambah mahasiswa: ' + (error.message || 'Terjadi kesalahan'));
+                        }
+                    } catch (error) {
+                        console.error('Error creating mahasiswa:', error);
+                        alert('Gagal menambah mahasiswa');
+                    }
+                }
 
+                async function updateMahasiswa() {
+                    try {
+                        const formData = new FormData(dataForm);
+                        formData.append('_method', 'PUT');
+
+                        const response = await fetch(`/dashboard-admin/mahasiswa/${editingId}`, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Accept': 'application/json',
+                            },
+                            body: formData
+                        });
+
+                        if (response.ok) {
+                            window.location.reload();
+                        } else {
+                            const error = await response.json();
+                            alert('Gagal mengupdate mahasiswa: ' + (error.message || 'Terjadi kesalahan'));
+                        }
+                    } catch (error) {
+                        console.error('Error updating mahasiswa:', error);
+                        alert('Gagal mengupdate mahasiswa');
+                    }
+                }
+
+                async function deleteMahasiswa(id) {
+                    try {
+                        const response = await fetch(`/dashboard-admin/mahasiswa/${id}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Accept': 'application/json',
+                            },
+                        });
+
+                        if (response.ok) {
+                            window.location.reload();
+                        } else {
+                            const error = await response.json();
+                            alert('Gagal menghapus mahasiswa: ' + (error.message || 'Terjadi kesalahan'));
+                        }
+                    } catch (error) {
+                        console.error('Error deleting mahasiswa:', error);
+                        alert('Gagal menghapus mahasiswa');
+                    }
+                }
+
+                // Auto-hide success message
+                const successMessage = document.getElementById('successMessage');
+                if (successMessage) {
+                    setTimeout(() => {
+                        successMessage.style.display = 'none';
+                    }, 3000);
+                }
             });
         </script>
 
