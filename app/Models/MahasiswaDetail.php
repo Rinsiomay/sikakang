@@ -12,13 +12,16 @@ class MahasiswaDetail extends Model
     protected $table = 'mahasiswa_details';
     protected $primaryKey = 'user_id';
     public $incrementing = false;
+    public $timestamps = false;
 
     protected $fillable = [
+        'user_id',
         'nim',
         'dosen_pa_id',
         'angkatan',
         'program_studi',
         'status_mahasiswa',
+        'fakultas',
     ];
 
     /**

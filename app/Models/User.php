@@ -19,10 +19,19 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+    protected $table = 'users';
+    protected $primaryKey = 'user_id';  // fix di sini
+    public $incrementing = true;
+    protected $keyType = 'int';
+
+
     protected $fillable = [
-        'name',
+        'nama_lengkap',
         'email',
         'password',
+        'email_verified_at',
+        'role',
+        'remember_token',
     ];
 
     /**
@@ -64,10 +73,15 @@ class User extends Authenticatable
         return $this->hasOne(MahasiswaDetail::class, 'user_id');
     }
 
+    public function dosenPa()
+    {
+        return $this->belongsTo(User::class, 'dosen_pa_id', 'user_id');
+    }
+
     /**
      * Get the dosen detail associated with the user.
      */
-    public function dosenDetail(): HasOne
+    public function dosenDetail()
     {
         return $this->hasOne(DosenDetail::class, 'user_id');
     }

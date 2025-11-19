@@ -1,10 +1,17 @@
 <?php
 
 use App\Http\Controllers\DosenController;
+use App\Http\Controllers\FakultasController;
 use App\Http\Controllers\HasilStudiController;
 use App\Http\Controllers\KrsController;
+use App\Http\Controllers\MataKuliahController;
+use App\Http\Controllers\MhsController;
+use App\Http\Controllers\PengajuanSuratController;
+use App\Http\Controllers\AdminPengajuanSuratController;
+use App\Http\Controllers\ProdiController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegistrationController;
+use App\Models\Fakultas;
 
 Route::get('/', function () {
     return view('pages.pengumuman');
@@ -30,30 +37,16 @@ Route::get('/hasil', [HasilStudiController::class, 'index']);
 Route::get('/jadwal', function () {
     return view('Dashboard.jadwal_kuliah');
 });
-
-<<<<<<< HEAD
-=======
 Route::get('/dashboard-admin', function () {
     return view('Dashboard.dashboard_admin');
 });
-Route::get('/dashboard-admin/dosen', function () {
-    return view('Dashboard.dashboard_admin_dosen');
-});
+Route::resource('/dashboard-admin/dosen', DosenController::class);
 
-Route::get('/dashboard-admin/mahasiswa', function () {
-    return view('Dashboard.dashboard_admin_mahasiswa');
-});
+Route::resource('/dashboard-admin/mahasiswa', MhsController::class);
 
-Route::get('/dashboard-admin/fakultas', function () {
-    return view('Dashboard.dashboard_admin_fakultas');
-});
+Route::resource('/dashboard-admin/fakultas', FakultasController::class);
 
-Route::get('/dashboard-admin/prodi', function () {
-    return view('Dashboard.dashboard_admin_prodi');
-});
-
-
->>>>>>> a315d8a (add dashboard admin)
+Route::resource('/dashboard-admin/mk', MataKuliahController::class);
 // Routes untuk detail jadwal
 Route::get('/jadwal/detail/{kode}', function ($kode) {
     return view('Dashboard.jadwal_detail', compact('kode'));
@@ -138,10 +131,24 @@ Route::get('/mycourse', function () {
 Route::get('/incourse', function () {
     return view('courses.detailcourse');
 });
-<<<<<<< HEAD
 
+Route::resource('/dashboard-admin/prodi', ProdiController::class);
 
 Route::get('/registration/detail', [RegistrationController::class, 'detail'])
-    ->name('registration.registrasi');
-=======
->>>>>>> a315d8a (add dashboard admin)
+    ->name('registration.detail');
+
+Route::get('/tagihan', function () {
+    return view('tagihan.tagihan_mahasiwa');
+})->name('tagihan.tagihan_mahasiswa');
+
+// Routes untuk Pengajuan Surat
+Route::get('/surat/riwayat', [PengajuanSuratController::class, 'index'])->name('surat.riwayat');
+Route::get('/surat/buat', [PengajuanSuratController::class, 'create'])->name('surat.create');
+Route::post('/surat', [PengajuanSuratController::class, 'store'])->name('surat.store');
+Route::get('/surat/{id}', [PengajuanSuratController::class, 'show'])->name('surat.show');
+Route::delete('/surat/{id}', [PengajuanSuratController::class, 'destroy'])->name('surat.destroy');
+
+// Admin - Verifikasi Pengajuan Surat
+Route::get('/dashboard-admin/pengajuan-surat', [AdminPengajuanSuratController::class, 'index'])->name('admin.surat.index');
+Route::post('/dashboard-admin/pengajuan-surat/{id}/approve', [AdminPengajuanSuratController::class, 'approve'])->name('admin.surat.approve');
+Route::post('/dashboard-admin/pengajuan-surat/{id}/reject', [AdminPengajuanSuratController::class, 'reject'])->name('admin.surat.reject');

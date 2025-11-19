@@ -36,133 +36,177 @@
 
         <p class="text-center text-[#FFE05E] my-5 font-semibold text-lg">Main Menu</p>
 
-<<<<<<< HEAD
         @php
-            $perkuliahanOpen = Request::is('dashboard*') || Request::is('krs*') || Request::is('hasil*') || Request::is('registrasi*') || Request::routeIs('tagihan.*');
+            $role = optional(auth()->user())->role;
+            $isAdmin = $role === 'admin';
         @endphp
 
-        <ul class="space-y-2 font-medium" x-data="{ openMenu: {{ $perkuliahanOpen ? 1 : 0 }} }">
-=======
-        <ul class="space-y-2 font-medium" x-data="{ openMenu: null }">
->>>>>>> a315d8a (add dashboard admin)
+        @if($isAdmin)
+            <ul class="space-y-2 font-medium">
+                <li>
+                    <a href="/dashboard-admin"
+                       class="flex items-center w-full p-2 rounded-lg {{ Request::is('dashboard-admin') ? 'text-[#FFE05E] font-semibold' : 'hover:text-[#FFE05E]' }}">
+                        <img src="{{ url('images/Group.svg') }}" alt="">
+                        <span class="ms-7 flex-1 text-left">Dashboard Admin</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/dashboard-admin/dosen"
+                       class="flex items-center w-full p-2 rounded-lg {{ Request::is('dashboard-admin/dosen*') ? 'text-[#FFE05E] font-semibold' : 'hover:text-[#FFE05E]' }}">
+                        <img src="{{ url('images/Group.svg') }}" alt="">
+                        <span class="ms-7 flex-1 text-left">Kelola Dosen</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/dashboard-admin/mahasiswa"
+                       class="flex items-center w-full p-2 rounded-lg {{ Request::is('dashboard-admin/mahasiswa*') ? 'text-[#FFE05E] font-semibold' : 'hover:text-[#FFE05E]' }}">
+                        <img src="{{ url('images/Group.svg') }}" alt="">
+                        <span class="ms-7 flex-1 text-left">Kelola Mahasiswa</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/dashboard-admin/prodi"
+                       class="flex items-center w-full p-2 rounded-lg {{ Request::is('dashboard-admin/prodi*') ? 'text-[#FFE05E] font-semibold' : 'hover:text-[#FFE05E]' }}">
+                        <img src="{{ url('images/Group.svg') }}" alt="">
+                        <span class="ms-7 flex-1 text-left">Kelola Prodi</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/dashboard-admin/fakultas"
+                       class="flex items-center w-full p-2 rounded-lg {{ Request::is('dashboard-admin/fakultas*') ? 'text-[#FFE05E] font-semibold' : 'hover:text-[#FFE05E]' }}">
+                        <img src="{{ url('images/Group.svg') }}" alt="">
+                        <span class="ms-7 flex-1 text-left">Kelola Fakultas</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/dashboard-admin/mk"
+                       class="flex items-center w-full p-2 rounded-lg {{ Request::is('dashboard-admin/mk*') ? 'text-[#FFE05E] font-semibold' : 'hover:text-[#FFE05E]' }}">
+                        <img src="{{ url('images/Group.svg') }}" alt="">
+                        <span class="ms-7 flex-1 text-left">Kelola Mata Kuliah</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.surat.index') }}"
+                       class="flex items-center w-full p-2 rounded-lg {{ Request::routeIs('admin.surat.*') ? 'text-[#FFE05E] font-semibold' : 'hover:text-[#FFE05E]' }}">
+                        <img src="{{ url('images/Frame.svg') }}" alt="">
+                        <span class="ms-7 flex-1 text-left">Verifikasi Surat</span>
+                    </a>
+                </li>
 
-            <!-- Dashboard -->
-            <li class="text-slate-500">
-                <button @click="openMenu === 1 ? openMenu = null : openMenu = 1"
-                    class="flex items-center w-full p-2  rounded-lg hover:text-[#FFE05E] transition">
-                    <img src="{{ url('images/Group.svg') }}" alt="">
-                    <span class="ms-7 flex-1 text-left">Perkuliahan</span>
-                    <svg class="w-4 h-4 transition" :class="{ 'rotate-180': openMenu === 1 }" fill="none"
-                        stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </button>
-                <ul x-show="openMenu === 1" x-collapse class="pl-14 space-y-1 text-sm mt-1">
-<<<<<<< HEAD
-            <li><a href="/dashboard"
-                class="block py-1 hover:text-[#FFE05E] {{ Request::is('dashboard') ? 'text-[#FFE05E] font-semibold' : 'hover:text-[#FFE05E]' }}">Dashboard</a>
-                    </li>
-            <li><a href="/krs"
-                class="block py-1 hover:text-[#FFE05E] {{ Request::is('krs') ? 'text-[#FFE05E] font-semibold' : 'hover:text-[#FFE05E]' }}">Rencana
-                            Studi</a></li>
-            <li><a href="#"
-                class="block py-1 hover:text-[#FFE05E] {{ Request::is('jadwal') ? 'text-[#FFE05E] font-semibold' : 'hover:text-[#FFE05E]' }}">Jadwal
-                            Kuliah</a></li>
-            <li><a href="/hasil"
-                class="block py-1 hover:text-[#FFE05E] {{ Request::is('hasil') ? 'text-[#FFE05E] font-semibold' : 'hover:text-[#FFE05E]' }}">Hasil
-                            Studi</a></li>
-            <li><a href="#"
-                class="block py-1 hover:text-[#FFE05E] {{ Request::is('tugasAkhir') ? 'text-[#FFE05E] font-semibold' : 'hover:text-[#FFE05E]' }}">Tugas
-                            Akhir</a></li>
-                    <li><a href="/registration/detail"
-                            class="block py-1 hover:text-[#FFE05E] {{ Request::is('registrasi') ? 'text-[#FFE05E] font-semibold' : 'hover:text-[#FFE05E]' }}">Registrasi</a>
-                    </li>
-            <li><a href="{{ route('tagihan.index') }}"
-                class="block py-1 hover:text-[#FFE05E] {{ Request::routeIs('tagihan.*') ? 'text-[#FFE05E] font-semibold' : 'hover:text-[#FFE05E]' }}">Tagihan</a>
-=======
-                    <li><a href="/dashboard"
-                            class="block py-1 hover:text-[#FFE05E] {{ Request::is('dashboard') ? 'text-[#FFE05E] font-semibold' : 'hover:text-[#FFE05E]' }}">Dashboard</a>
-                    </li>
-                    <li><a href="krs"
-                            class="block py-1 hover:text-[#FFE05E] {{ Request::is('krs') ? 'text-[#FFE05E] font-semibold' : 'hover:text-[#FFE05E]' }}">Rencana
-                            Studi</a></li>
-                    <li><a href="/jadwal"
-                            class="block py-1 hover:text-[#FFE05E] {{ Request::is('jadwal') ? 'text-[#FFE05E] font-semibold' : 'hover:text-[#FFE05E]' }}">Jadwal
-                            Kuliah</a></li>
-                    <li><a href="hasil"
-                            class="block py-1 hover:text-[#FFE05E] {{ Request::is('hasil') ? 'text-[#FFE05E] font-semibold' : 'hover:text-[#FFE05E]' }}">Hasil
-                            Studi</a></li>
-                    <li><a href="#"
-                            class="block py-1 hover:text-[#FFE05E] {{ Request::is('tugasAkhir') ? 'text-[#FFE05E] font-semibold' : 'hover:text-[#FFE05E]' }}">Tugas
-                            Akhir</a></li>
-                    <li><a href="#"
-                            class="block py-1 hover:text-[#FFE05E] {{ Request::is('registrasi') ? 'text-[#FFE05E] font-semibold' : 'hover:text-[#FFE05E]' }}">Registrasi</a>
-                    </li>
-                    <li><a href="#"
-                            class="block py-1 hover:text-[#FFE05E] {{ Request::is('tagihan') ? 'text-[#FFE05E] font-semibold' : 'hover:text-[#FFE05E]' }}">Tagihan</a>
->>>>>>> a315d8a (add dashboard admin)
-                    </li>
-                </ul>
-            </li>
+                <hr class="text-slate-500 mt-5 mb-5">
+                <li class="flex items-center p-2">
+                    <img src="{{ url('images/logout.svg') }}" alt="" srcset="">
+                    <a href="#" class="ms-7 text-slate-500 text-left hover:text-red-500">Sign-Out</a>
+                </li>
+            </ul>
 
-            <!-- Tugas -->
-            <li class="text-slate-500">
-                <button @click="openMenu === 2 ? openMenu = null : openMenu = 2"
-                    class="flex items-center w-full p-2  rounded-lg hover:text-[#FFE05E] transition">
-                    <img src="{{ url('images/tugas.svg') }}" alt="" width="20">
-                    <span class="ms-7 flex-1 text-left">Tugas</span>
-                    <svg class="w-4 h-4 transition" :class="{ 'rotate-180': openMenu === 2 }" fill="none"
-                        stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </button>
-                <ul x-show="openMenu === 2" x-collapse class="pl-14 space-y-1 text-sm mt-1">
-<<<<<<< HEAD
-                    <li><a href="/mycourse" class="block py-1 hover:text-[#FFE05E]">Tugas Kuliah</a></li>
-=======
-                    <li><a href="#" class="block py-1 hover:text-[#FFE05E]">Tugas Kuliah</a></li>
->>>>>>> a315d8a (add dashboard admin)
-                </ul>
-            </li>
+        @else
 
-            <!-- Pengajuan Surat -->
-            <li class="text-slate-500">
-                <button @click="openMenu === 3 ? openMenu = null : openMenu = 3"
-                    class="flex items-center w-full p-2  rounded-lg hover:text-[#FFE05E] transition">
-                    <img src="{{ url('images/Frame.svg') }}" alt="">
-                    <span class="ms-7 flex-1 text-left">Pengajuan Surat</span>
-                    <svg class="w-4 h-4 transition" :class="{ 'rotate-180': openMenu === 3 }" fill="none"
-                        stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </button>
-                <ul x-show="openMenu === 3" x-collapse class="pl-14 space-y-1 text-sm mt-1">
-                    <li><a href="#" class="block py-1 hover:text-[#FFE05E]">Buat Surat</a></li>
-                    <li><a href="#" class="block py-1 hover:text-[#FFE05E]">Riwayat Surat</a></li>
-                </ul>
-            </li>
+        @php
+            $perkuliahanOpen =
+                Request::is('dashboard*') ||
+                Request::is('krs*') ||
+                Request::is('hasil*') ||
+                Request::is('jadwal*') ||
+                Request::is('registration*') ||
+                Request::is('tagihan*');
+            
+            $pengajuanSuratOpen =
+                Request::routeIs('surat.*');
+        @endphp
 
-            <hr class="text-slate-500 mt-5 mb-5">
-            <li class="flex items-center p-2">
-                <img src="{{ url('images/profile.svg') }}" alt="" srcset="">
-                <a href="/profile/mahasiswa"
-                    class="ms-7 text-slate-500 text-left {{ Request::is('profile/mahasiswa') ? 'text-[#FFE05E] font-semibold' : 'hover:text-[#FFE05E]' }}">
-                    Profile
-                </a>
-            </li>
-            <li class="flex items-center p-2">
-                <img src="{{ url('images/logout.svg') }}" alt="" srcset="">
-                <a href="#" class="ms-7 text-slate-500 text-left hover:text-red-500">
-                    Sign-Out
-                </a>
-            </li>
+        <ul class="space-y-2 font-medium" x-data="{ openMenu: {{ $perkuliahanOpen ? 1 : ($pengajuanSuratOpen ? 3 : 0) }} }">
 
-<<<<<<< HEAD
-        </ul>
-=======
->>>>>>> a315d8a (add dashboard admin)
+                <!-- Dashboard -->
+                <li class="text-slate-500">
+                    <button @click="openMenu === 1 ? openMenu = null : openMenu = 1"
+                        class="flex items-center w-full p-2  rounded-lg hover:text-[#FFE05E] transition">
+                        <img src="{{ url('images/Group.svg') }}" alt="">
+                        <span class="ms-7 flex-1 text-left">Perkuliahan</span>
+                        <svg class="w-4 h-4 transition" :class="{ 'rotate-180': openMenu === 1 }" fill="none"
+                            stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <ul x-show="openMenu === 1" x-collapse class="pl-14 space-y-1 text-sm mt-1">
+                        <li><a href="/dashboard"
+                                class="block py-1 hover:text-[#FFE05E] {{ Request::is('dashboard') ? 'text-[#FFE05E] font-semibold' : 'hover:text-[#FFE05E]' }}">Dashboard</a>
+                        </li>
+                        <li><a href="/krs"
+                                class="block py-1 hover:text-[#FFE05E] {{ Request::is('krs') ? 'text-[#FFE05E] font-semibold' : 'hover:text-[#FFE05E]' }}">Rencana
+                                Studi</a></li>
+                        <li><a href="/jadwal"
+                                class="block py-1 hover:text-[#FFE05E] {{ Request::is('jadwal*') ? 'text-[#FFE05E] font-semibold' : 'hover:text-[#FFE05E]' }}">Jadwal
+                                Kuliah</a></li>
+                        <li><a href="/hasil"
+                                class="block py-1 hover:text-[#FFE05E] {{ Request::is('hasil') ? 'text-[#FFE05E] font-semibold' : 'hover:text-[#FFE05E]' }}">Hasil
+                                Studi</a></li>
+                        <li><a href="#"
+                                class="block py-1 hover:text-[#FFE05E] {{ Request::is('tugasAkhir') ? 'text-[#FFE05E] font-semibold' : 'hover:text-[#FFE05E]' }}">Tugas
+                                Akhir</a></li>
+                        <li><a href="/registration/detail"
+                                class="block py-1 hover:text-[#FFE05E] {{ Request::is('registration*') ? 'text-[#FFE05E] font-semibold' : 'hover:text-[#FFE05E]' }}">Registrasi</a>
+                        </li>
+                        <li><a href="{{ route('tagihan.tagihan_mahasiswa') }}"
+                                class="block py-1 {{ Request::routeIs('tagihan.*') ? 'text-[#FFE05E] font-semibold' : 'hover:text-[#FFE05E]' }}">Tagihan</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Tugas -->
+                <li class="text-slate-500">
+                    <button @click="openMenu === 2 ? openMenu = null : openMenu = 2"
+                        class="flex items-center w-full p-2  rounded-lg hover:text-[#FFE05E] transition">
+                        <img src="{{ url('images/tugas.svg') }}" alt="" width="20">
+                        <span class="ms-7 flex-1 text-left">Tugas</span>
+                        <svg class="w-4 h-4 transition" :class="{ 'rotate-180': openMenu === 2 }" fill="none"
+                            stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <ul x-show="openMenu === 2" x-collapse class="pl-14 space-y-1 text-sm mt-1">
+                        <li><a href="/mycourse" class="block py-1 hover:text-[#FFE05E] {{ Request::is('mycourse*') || Request::is('incourse*') ? 'text-[#FFE05E] font-semibold' : '' }}">Tugas Kuliah</a></li>
+                    </ul>
+                </li>
+
+                <!-- Pengajuan Surat -->
+                <li class="text-slate-500">
+                    <button @click="openMenu === 3 ? openMenu = null : openMenu = 3"
+                        class="flex items-center w-full p-2  rounded-lg hover:text-[#FFE05E] transition">
+                        <img src="{{ url('images/Frame.svg') }}" alt="">
+                        <span class="ms-7 flex-1 text-left">Pengajuan Surat</span>
+                        <svg class="w-4 h-4 transition" :class="{ 'rotate-180': openMenu === 3 }" fill="none"
+                            stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <ul x-show="openMenu === 3" x-collapse class="pl-14 space-y-1 text-sm mt-1">
+                        <li><a href="{{ route('surat.create') }}" class="block py-1 hover:text-[#FFE05E] {{ Request::routeIs('surat.create') ? 'text-[#FFE05E] font-semibold' : '' }}">Buat Surat</a></li>
+                        <li><a href="{{ route('surat.riwayat') }}" class="block py-1 hover:text-[#FFE05E] {{ Request::routeIs('surat.riwayat') || Request::routeIs('surat.show') ? 'text-[#FFE05E] font-semibold' : '' }}">Riwayat Surat</a></li>
+                    </ul>
+                </li>
+
+                <hr class="text-slate-500 mt-5 mb-5">
+                <li class="flex items-center p-2">
+                    <img src="{{ url('images/profile.svg') }}" alt="" srcset="">
+                    <a href="/profile/mahasiswa"
+                        class="ms-7 text-slate-500 text-left {{ Request::is('profile/mahasiswa') ? 'text-[#FFE05E] font-semibold' : 'hover:text-[#FFE05E]' }}">
+                        Profile
+                    </a>
+                </li>
+                <li class="flex items-center p-2">
+                    <img src="{{ url('images/logout.svg') }}" alt="" srcset="">
+                    <a href="#" class="ms-7 text-slate-500 text-left hover:text-red-500">
+                        Sign-Out
+                    </a>
+                </li>
+
+            </ul>
+
     </div>
 </aside>
 
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 <script src="https://unpkg.com/flowbite@latest/dist/flowbite.min.js"></script>
+
+@endif
