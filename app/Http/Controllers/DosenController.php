@@ -13,7 +13,7 @@ class DosenController extends Controller
      */
     public function index()
     {
-        $dosen = User::where('role', 'dosen')->get();
+        $dosen = User::where('role', 'dosen')->with('dosenDetail')->get();
 
         return view('Dashboard.dashboard_admin_dosen', compact('dosen'));
     }
@@ -33,23 +33,25 @@ class DosenController extends Controller
             'email' => 'required|email',
             'nidn' => 'required',
             'pangkat' => 'required',
-            'keahlian' => 'required'
+            'keahlian' => 'required',
+            'password' => 'required|min:5'
         ]);
 
 
         $user = User::create([
             'nama_lengkap' => $validated['nama_lengkap'],
             'email' => $validated['email'],
-            'role' => 'dosen'
+            'role' => 'dosen',
+            'password' => bcrypt($validated['password'])
         ]);
 
         DosenDetail::create([
-            'user_id' => $user->id,
+            'user_id' => $user->user_id,
             'nidn' => $validated['nidn'],
             'jabatan_fungsional' => $validated['pangkat'],
             'bidang_keahlian' => $validated['keahlian']
         ]);
-        return redirect('/dashboard-admin');
+        return redirect('/dashboard-admin/dosen');
     }
 
     /**
