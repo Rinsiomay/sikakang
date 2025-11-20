@@ -16,8 +16,8 @@ class MataKuliahController extends Controller
     {
         $prodi = Prodi::all();
         $dosen = \App\Models\User::where('role', 'dosen')->get();
-        $mataKuliah = MataKuliah::with(['prodi', 'kelas.dosenPengampu'])->get();
-        return view('Dashboard.dashboard_admin_mk', compact('prodi', 'dosen', 'mataKuliah'));
+        $allMataKuliah = MataKuliah::with(['prodi', 'kelas.dosenPengampu'])->get();
+        return view('Dashboard.dashboard_admin_mk', compact('prodi', 'dosen', 'allMataKuliah'));
     }
 
     /**
@@ -87,7 +87,12 @@ class MataKuliahController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $editMataKuliah = MataKuliah::with(['prodi', 'kelas.dosenPengampu'])->findOrFail($id);
+        $prodi = Prodi::all();
+        $dosen = \App\Models\User::where('role', 'dosen')->get();
+        $allMataKuliah = MataKuliah::with(['prodi', 'kelas.dosenPengampu'])->get();
+        
+        return view('Dashboard.dashboard_admin_mk', compact('prodi', 'dosen', 'allMataKuliah', 'editMataKuliah'));
     }
 
     /**
@@ -95,7 +100,56 @@ class MataKuliahController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        // Debug: log data yang diterima
+        \Log::info('Update MataKuliah', [
+            'id' => $id,
+            'request' => $request->all()
+        ]);
+        
+        $mataKuliah = MataKuliah::findOrFail($id);
+        
+        $validated = $request->validate([
+            'nama_mk' => 'required',
+            'sks' => 'required|integer',
+            'semester' => 'required',
+            'id_prodi' => 'required|exists:prodi,id',
+            'deskripsi' => 'nullable',
+            'dosen_pengampu_id' => 'nullable|exists:users,user_id',
+            'angkatan' => 'nullable',
+        ]);
+        
+        \Log::info('Validated data', $validated);
+        
+        // Update hanya field yang ada di tabel mata_kuliah
+        $mataKuliah->update([
+            'nama_mk' => $validated['nama_mk'],
+            'sks' => $validated['sks'],
+            'semester' => $validated['semester'],
+            'id_prodi' => $validated['id_prodi'],
+            'deskripsi' => $validated['deskripsi'],
+        ]);
+        
+        // Update dosen dan angkatan di semua kelas terkait jika ada perubahan
+        if ($request->has('dosen_pengampu_id') || $request->has('angkatan')) {
+            if ($request->filled('angkatan')) {
+                // Update nama kelas dengan angkatan baru
+                $kelas = $mataKuliah->kelas;
+                foreach ($kelas as $k) {
+                    $kelasLetter = substr($k->nama_kelas, 0, 1); // A, B, C, dst
+                    $k->update([
+                        'nama_kelas' => $kelasLetter . '-' . substr($request->angkatan, -2),
+                        'dosen_pengampu_id' => $request->dosen_pengampu_id ?? $k->dosen_pengampu_id,
+                    ]);
+                }
+            } elseif ($request->filled('dosen_pengampu_id')) {
+                // Update hanya dosen_pengampu_id
+                $mataKuliah->kelas()->update([
+                    'dosen_pengampu_id' => $request->dosen_pengampu_id
+                ]);
+            }
+        }
+        
+        return redirect('/dashboard-admin/mk')->with('success', 'Mata Kuliah berhasil diperbarui');
     }
 
     /**
@@ -103,6 +157,14 @@ class MataKuliahController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $mataKuliah = MataKuliah::findOrFail($id);
+        
+        // Hapus semua kelas terkait
+        $mataKuliah->kelas()->delete();
+        
+        // Hapus mata kuliah
+        $mataKuliah->delete();
+        
+        return redirect('/dashboard-admin/mk')->with('success', 'Mata Kuliah dan semua kelasnya berhasil dihapus');
     }
 }

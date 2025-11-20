@@ -52,7 +52,9 @@ Route::middleware(['auth'])->group(function () {
             return view('Dashboard.dashboard_mahasiswa', compact('labels', 'ips'));
         })->name('dashboard');
 
-        Route::get('/krs', [KrsController::class, 'index']);
+        Route::get('/krs', [KrsController::class, 'index'])->name('krs.index');
+        Route::post('/krs/store', [KrsController::class, 'store'])->name('krs.store');
+        Route::delete('/krs/{id}', [KrsController::class, 'destroy'])->name('krs.destroy');
         Route::get('/hasil', [HasilStudiController::class, 'index']);
         Route::get('/jadwal', function () {
             return view('Dashboard.jadwal_kuliah');

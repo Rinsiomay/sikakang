@@ -9,9 +9,7 @@ use App\Models\Fakultas;
 use App\Models\Prodi;
 use App\Models\MataKuliah;
 use App\Models\Kelas;
-use App\Models\Krs;
 use App\Models\JenisSurat;
-use App\Models\PengajuanSurat;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -76,6 +74,150 @@ class DatabaseSeeder extends Seeder
             'bidang_keahlian' => 'Basis Data',
         ]);
 
+        // Additional Dosen
+        $dosen4 = User::create([
+            'nama_lengkap' => 'Suprinanto, S.Kom., M.Kom.',
+            'email' => 'suprinanto@untirta.ac.id',
+            'password' => Hash::make('password123'),
+            'role' => 'dosen',
+        ]);
+        DosenDetail::create([
+            'user_id' => $dosen4->user_id,
+            'nidn' => '2513331093',
+            'jabatan_fungsional' => 'Asisten Ahli',
+            'bidang_keahlian' => 'Sistem Basis Data',
+        ]);
+
+        $dosen5 = User::create([
+            'nama_lengkap' => 'Arief Maman, S.Kom., M.T.',
+            'email' => 'ariefmaman@untirta.ac.id',
+            'password' => Hash::make('password123'),
+            'role' => 'dosen',
+        ]);
+        DosenDetail::create([
+            'user_id' => $dosen5->user_id,
+            'nidn' => '2513331094',
+            'jabatan_fungsional' => 'Lektor',
+            'bidang_keahlian' => 'Sistem Operasi',
+        ]);
+
+        $dosen6 = User::create([
+            'nama_lengkap' => 'Wicaksana, S.T., M.Eng.',
+            'email' => 'wicaksana@untirta.ac.id',
+            'password' => Hash::make('password123'),
+            'role' => 'dosen',
+        ]);
+        DosenDetail::create([
+            'user_id' => $dosen6->user_id,
+            'nidn' => '2513331095',
+            'jabatan_fungsional' => 'Lektor',
+            'bidang_keahlian' => 'Internet of Things',
+        ]);
+
+        $dosen7 = User::create([
+            'nama_lengkap' => 'Ningning Krisdayanti, S.Kom., M.Sc.',
+            'email' => 'ningning@untirta.ac.id',
+            'password' => Hash::make('password123'),
+            'role' => 'dosen',
+        ]);
+        DosenDetail::create([
+            'user_id' => $dosen7->user_id,
+            'nidn' => '2513331096',
+            'jabatan_fungsional' => 'Asisten Ahli',
+            'bidang_keahlian' => 'Kecerdasan Artificial',
+        ]);
+
+        $dosen8 = User::create([
+            'nama_lengkap' => 'Fathin Damyati, S.Kom., M.Kom.',
+            'email' => 'fathin@untirta.ac.id',
+            'password' => Hash::make('password123'),
+            'role' => 'dosen',
+        ]);
+        DosenDetail::create([
+            'user_id' => $dosen8->user_id,
+            'nidn' => '2513331097',
+            'jabatan_fungsional' => 'Lektor Kepala',
+            'bidang_keahlian' => 'Pemrograman Web',
+        ]);
+
+        $dosen9 = User::create([
+            'nama_lengkap' => 'Febriyanto Darnis, S.T., M.T.',
+            'email' => 'febriyanto@untirta.ac.id',
+            'password' => Hash::make('password123'),
+            'role' => 'dosen',
+        ]);
+        DosenDetail::create([
+            'user_id' => $dosen9->user_id,
+            'nidn' => '2513331098',
+            'jabatan_fungsional' => 'Asisten Ahli',
+            'bidang_keahlian' => 'Algoritma',
+        ]);
+
+        $dosen10 = User::create([
+            'nama_lengkap' => 'Hill Man, S.Kom., M.T.I.',
+            'email' => 'hillman@untirta.ac.id',
+            'password' => Hash::make('password123'),
+            'role' => 'dosen',
+        ]);
+        DosenDetail::create([
+            'user_id' => $dosen10->user_id,
+            'nidn' => '2513331099',
+            'jabatan_fungsional' => 'Lektor',
+            'bidang_keahlian' => 'Jaringan Komputer',
+        ]);
+
+        $dosen11 = User::create([
+            'nama_lengkap' => 'Yulian I Am Sorry, S.Kom., M.Kom.',
+            'email' => 'yuliansorry@untirta.ac.id',
+            'password' => Hash::make('password123'),
+            'role' => 'dosen',
+        ]);
+        DosenDetail::create([
+            'user_id' => $dosen11->user_id,
+            'nidn' => '2513331100',
+            'jabatan_fungsional' => 'Asisten Ahli',
+            'bidang_keahlian' => 'E-Commerce',
+        ]);
+
+        $dosen12 = User::create([
+            'nama_lengkap' => 'Miftahun Solihin, S.Kom., M.T.',
+            'email' => 'miftahun@untirta.ac.id',
+            'password' => Hash::make('password123'),
+            'role' => 'dosen',
+        ]);
+        DosenDetail::create([
+            'user_id' => $dosen12->user_id,
+            'nidn' => '2513331101',
+            'jabatan_fungsional' => 'Lektor',
+            'bidang_keahlian' => 'Rekayasa Perangkat Lunak',
+        ]);
+
+        $dosen13 = User::create([
+            'nama_lengkap' => 'Mas Judin, S.T., M.Eng.',
+            'email' => 'masjudin@untirta.ac.id',
+            'password' => Hash::make('password123'),
+            'role' => 'dosen',
+        ]);
+        DosenDetail::create([
+            'user_id' => $dosen13->user_id,
+            'nidn' => '2513331102',
+            'jabatan_fungsional' => 'Asisten Ahli',
+            'bidang_keahlian' => 'Sistem Informasi',
+        ]);
+
+        $dosen14 = User::create([
+            'nama_lengkap' => 'Alwan NPD, S.Kom., M.Kom.',
+            'email' => 'alwan@untirta.ac.id',
+            'password' => Hash::make('password123'),
+            'role' => 'dosen',
+        ]);
+        DosenDetail::create([
+            'user_id' => $dosen14->user_id,
+            'nidn' => '2513331103',
+            'jabatan_fungsional' => 'Lektor',
+            'bidang_keahlian' => 'Data Mining',
+        ]);
+
         // Create Fakultas
         $fakultasTeknik = Fakultas::create([
             'fakultas' => 'Fakultas Teknik',
@@ -137,126 +279,87 @@ class DatabaseSeeder extends Seeder
             'status_mahasiswa' => 'Aktif',
         ]);
 
-        // Create Mata Kuliah
-        $mkPemweb = MataKuliah::create([
-            'kode_mk' => 'RIK42213',
-            'nama_mk' => 'Pemrograman Web',
-            'sks' => 3,
-            'semester' => '5',
-            'id_prodi' => $prodiInformatika->id,
-            'deskripsi' => 'Mata kuliah yang mempelajari tentang pemrograman web',
-        ]);
-
-        $mkEcommerce = MataKuliah::create([
-            'kode_mk' => 'RIK42113',
-            'nama_mk' => 'E-Commerce',
-            'sks' => 3,
-            'semester' => '5',
-            'id_prodi' => $prodiInformatika->id,
-            'deskripsi' => 'Mata kuliah yang mempelajari tentang e-commerce',
-        ]);
-
-        $mkBasdat = MataKuliah::create([
-            'kode_mk' => 'RIK42207',
+        // Create Sample Mata Kuliah
+        MataKuliah::create([
+            'kode_mk' => 'IF101',
             'nama_mk' => 'Sistem Basis Data',
             'sks' => 3,
             'semester' => '3',
             'id_prodi' => $prodiInformatika->id,
-            'deskripsi' => 'Mata kuliah yang mempelajari tentang basis data',
+            'deskripsi' => 'Mata kuliah yang mempelajari konsep dasar basis data, perancangan database, dan SQL',
         ]);
 
-        $mkSisop = MataKuliah::create([
-            'kode_mk' => 'RIK42203',
+        MataKuliah::create([
+            'kode_mk' => 'IF102',
             'nama_mk' => 'Sistem Operasi',
             'sks' => 3,
-            'semester' => '5',
+            'semester' => '4',
             'id_prodi' => $prodiInformatika->id,
-            'deskripsi' => 'Mata kuliah yang mempelajari tentang sistem operasi',
+            'deskripsi' => 'Mata kuliah yang mempelajari konsep sistem operasi, manajemen proses, memori, dan file system',
         ]);
 
-        $mkIot = MataKuliah::create([
-            'kode_mk' => 'RIK42208',
+        MataKuliah::create([
+            'kode_mk' => 'IF103',
             'nama_mk' => 'Internet of Things',
+            'sks' => 3,
+            'semester' => '6',
+            'id_prodi' => $prodiInformatika->id,
+            'deskripsi' => 'Mata kuliah yang mempelajari konsep IoT, sensor, actuator, dan aplikasi IoT',
+        ]);
+
+        MataKuliah::create([
+            'kode_mk' => 'IF104',
+            'nama_mk' => 'Pengantar Kecerdasan Artificial',
             'sks' => 3,
             'semester' => '5',
             'id_prodi' => $prodiInformatika->id,
-            'deskripsi' => 'Mata kuliah yang mempelajari tentang IoT',
+            'deskripsi' => 'Mata kuliah yang mempelajari konsep dasar AI, machine learning, dan neural networks',
         ]);
 
-        // Create Kelas
-        $kelasPemweb = Kelas::create([
-            'mk_id' => $mkPemweb->mk_id,
-            'dosen_pengampu_id' => $dosen1->user_id,
-            'nama_kelas' => 'C-24',
-            'tahun_ajar' => '2024/2025',
-            'semester' => 'ganjil',
-            'kapasitas' => 40,
-            'jam_mulai' => '10:00:00',
-            'jam_selesai' => '12:00:00',
-            'hari' => 'Rabu',
+        MataKuliah::create([
+            'kode_mk' => 'IF105',
+            'nama_mk' => 'Pemrograman Web',
+            'sks' => 3,
+            'semester' => '3',
+            'id_prodi' => $prodiInformatika->id,
+            'deskripsi' => 'Mata kuliah yang mempelajari pengembangan aplikasi web menggunakan HTML, CSS, JavaScript, dan framework modern',
         ]);
 
-        $kelasEcommerce = Kelas::create([
-            'mk_id' => $mkEcommerce->mk_id,
-            'dosen_pengampu_id' => $dosen2->user_id,
-            'nama_kelas' => 'A-24',
-            'tahun_ajar' => '2024/2025',
-            'semester' => 'ganjil',
-            'kapasitas' => 40,
-            'jam_mulai' => '08:00:00',
-            'jam_selesai' => '10:00:00',
-            'hari' => 'Jumat',
+        MataKuliah::create([
+            'kode_mk' => 'IF106',
+            'nama_mk' => 'Desain dan Analisis Algoritma',
+            'sks' => 3,
+            'semester' => '4',
+            'id_prodi' => $prodiInformatika->id,
+            'deskripsi' => 'Mata kuliah yang mempelajari teknik desain algoritma, analisis kompleksitas, dan optimasi algoritma',
         ]);
 
-        $kelasBasdat = Kelas::create([
-            'mk_id' => $mkBasdat->mk_id,
-            'dosen_pengampu_id' => $dosen3->user_id,
-            'nama_kelas' => 'B-24',
-            'tahun_ajar' => '2024/2025',
-            'semester' => 'ganjil',
-            'kapasitas' => 40,
-            'jam_mulai' => '13:00:00',
-            'jam_selesai' => '15:00:00',
-            'hari' => 'Senin',
+        MataKuliah::create([
+            'kode_mk' => 'IF107',
+            'nama_mk' => 'Jaringan Komputer',
+            'sks' => 3,
+            'semester' => '5',
+            'id_prodi' => $prodiInformatika->id,
+            'deskripsi' => 'Mata kuliah yang mempelajari konsep jaringan komputer, protokol, routing, dan keamanan jaringan',
         ]);
 
-        // Create KRS for Mahasiswa
-        Krs::create([
-            'mahasiswa_user_id' => $mahasiswa1->user_id,
-            'kelas_id' => $kelasPemweb->kelas_id,
-            'status_krs' => 'diambil',
-            'tanggal_ambil' => now(),
-        ]);
-
-        Krs::create([
-            'mahasiswa_user_id' => $mahasiswa1->user_id,
-            'kelas_id' => $kelasEcommerce->kelas_id,
-            'status_krs' => 'diambil',
-            'tanggal_ambil' => now(),
-        ]);
-
-        Krs::create([
-            'mahasiswa_user_id' => $mahasiswa1->user_id,
-            'kelas_id' => $kelasBasdat->kelas_id,
-            'status_krs' => 'diambil',
-            'tanggal_ambil' => now(),
-        ]);
-
-        Krs::create([
-            'mahasiswa_user_id' => $mahasiswa2->user_id,
-            'kelas_id' => $kelasPemweb->kelas_id,
-            'status_krs' => 'diambil',
-            'tanggal_ambil' => now(),
+        MataKuliah::create([
+            'kode_mk' => 'IF108',
+            'nama_mk' => 'E-Commerce',
+            'sks' => 3,
+            'semester' => '6',
+            'id_prodi' => $prodiInformatika->id,
+            'deskripsi' => 'Mata kuliah yang mempelajari konsep perdagangan elektronik, sistem pembayaran online, dan keamanan transaksi',
         ]);
 
         // Create Jenis Surat
-        $jsAktif = JenisSurat::create([
+        JenisSurat::create([
             'nama_surat' => 'Surat Keterangan Aktif Kuliah',
             'persyaratan' => 'KTM aktif, Bukti pembayaran UKT semester berjalan',
             'estimasi_hari' => 3,
         ]);
 
-        $jsMagang = JenisSurat::create([
+        JenisSurat::create([
             'nama_surat' => 'Surat Pengantar Magang',
             'persyaratan' => 'Transkrip nilai minimal 100 SKS, Surat permohonan dari perusahaan',
             'estimasi_hari' => 5,
@@ -284,25 +387,6 @@ class DatabaseSeeder extends Seeder
             'nama_surat' => 'Surat Keterangan Cuti Akademik',
             'persyaratan' => 'Surat permohonan cuti, Surat persetujuan orang tua, Bukti alasan cuti',
             'estimasi_hari' => 3,
-        ]);
-
-        // Sample Pengajuan Surat
-        PengajuanSurat::create([
-            'mahasiswa_user_id' => $mahasiswa1->user_id,
-            'jenis_surat_id' => $jsAktif->jenis_surat_id,
-            'dosen_pa_id' => $dosen3->user_id,
-            'status_pengajuan' => 'menunggu',
-            'keperluan' => 'Untuk keperluan administrasi beasiswa internal kampus.',
-            'tanggal_keperluan' => now()->addDays(7),
-        ]);
-
-        PengajuanSurat::create([
-            'mahasiswa_user_id' => $mahasiswa2->user_id,
-            'jenis_surat_id' => $jsMagang->jenis_surat_id,
-            'dosen_pa_id' => $dosen1->user_id,
-            'status_pengajuan' => 'menunggu',
-            'keperluan' => 'Pengantar permohonan magang di PT Maju Jaya.',
-            'tanggal_keperluan' => now()->addDays(14),
         ]);
 
         $this->command->info('Database seeded successfully!');

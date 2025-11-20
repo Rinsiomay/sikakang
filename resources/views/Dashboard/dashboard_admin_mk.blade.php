@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Dashboard Admin - Program Studi</title>
         <script src="https://cdn.tailwindcss.com"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
         <style>
             @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
@@ -65,6 +65,47 @@
             </div>
         </nav>
         <div class="p-4 sm:p-6 bg-gray-50 min-h-screen">
+            
+            @if (session('success'))
+                <div class="mb-4 bg-green-50 border-l-4 border-green-500 p-4 rounded">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        <p class="text-sm font-medium text-green-700">{{ session('success') }}</p>
+                    </div>
+                </div>
+            @endif
+
+            @if (session('error'))
+                <div class="mb-4 bg-red-50 border-l-4 border-red-500 p-4 rounded">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 text-red-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                        </svg>
+                        <p class="text-sm font-medium text-red-700">{{ session('error') }}</p>
+                    </div>
+                </div>
+            @endif
+
+            @if ($errors->any())
+                <div class="mb-4 bg-red-50 border-l-4 border-red-500 p-4 rounded">
+                    <div class="flex items-start">
+                        <svg class="w-5 h-5 text-red-500 mr-3 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                        </svg>
+                        <div>
+                            <p class="text-sm font-medium text-red-700 mb-2">Terjadi kesalahan:</p>
+                            <ul class="list-disc list-inside text-sm text-red-600 space-y-1">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             <div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-x-6 md:gap-y-6">
                 <div
                     class="col-span-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
@@ -121,9 +162,13 @@
                         id="closeModal" class="text-gray-400 hover:text-gray-600"> <i class="fas fa-times"></i>
                     </button>
                 </div>
-                <form id="dataForm" action="{{ route('mk.store') }}" method="POST" class="p-4 space-y-4"> 
+                <form id="dataForm" action="{{ isset($editMataKuliah) ? route('mk.update', $editMataKuliah->mk_id) : route('mk.store') }}" method="POST" class="p-4 space-y-4"> 
                     @csrf
+                    @if(isset($editMataKuliah))
+                        @method('PUT')
+                    @endif
                     <input type="hidden" id="editId" name="id">
+                    <input type="hidden" id="mkId" value="{{ isset($editMataKuliah) ? $editMataKuliah->mk_id : '' }}">
                     <div id="formContent" class="space-y-4">
                     </div>
                     <div class="flex justify-end space-x-3 pt-4 sticky bottom-0 bg-white pb-2"> <button type="button"
@@ -137,7 +182,9 @@
         </div>
         <script>
             // Data dari database (Laravel)
-            const dbMataKuliah = @json($mataKuliah ?? []);
+            const dbMataKuliah = @json($allMataKuliah ?? []);
+            const editMataKuliah = @json($editMataKuliah ?? null);
+            const isEditMode = {{ isset($editMataKuliah) ? 'true' : 'false' }};
             
             document.getElementById('viewSelector').addEventListener('change', function() {
                 window.location.href = this.value;
@@ -216,17 +263,8 @@
                         }],
                     };
 
-                    // Dosen options
-                    const dosenOptions = [
-                        "Dr. Ahmad Wijaya, M.Kom.",
-                        "Dr. Siti Rahayu, M.T.",
-                        "Prof. Budi Santoso, Ph.D.",
-                        "Dr. Maya Sari, M.Sc.",
-                        "Ir. Rizki Pratama, M.T.",
-                        "Dr. Indra Gunawan, M.Eng.",
-                        "Prof. Maria Sari, Ph.D.",
-                        "Dr. Joko Widodo, M.Kom."
-                    ];
+                    // Get real dosen data from server
+                    const dosenOptions = @json($dosen ?? []);
 
                     const daysOptions = [
                         "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"
@@ -370,6 +408,77 @@
                         generateClassTimeInputs(1);
                         renderTable();
                         setupEventListeners();
+                        
+                        // Check if edit mode
+                        if (isEditMode && editMataKuliah) {
+                            openEditModal();
+                        }
+                    }
+                    
+                    function openEditModal() {
+                        modalTitle.textContent = 'Edit Mata Kuliah';
+                        formContent.innerHTML = formMK;
+                        
+                        // Populate options
+                        populateAngkatanOptions();
+                        populateDosenOptions();
+                        
+                        // Hide jumlah kelas and class time inputs for edit mode
+                        const jumlahKelasDiv = document.querySelector('[for="jumlah_kelas"]')?.parentElement;
+                        const classTimeInputs = document.getElementById('classTimeInputs');
+                        if (jumlahKelasDiv) jumlahKelasDiv.style.display = 'none';
+                        if (classTimeInputs) classTimeInputs.style.display = 'none';
+                        
+                        // Update info text
+                        const infoDiv = formContent.querySelector('.bg-blue-50');
+                        if (infoDiv) {
+                            infoDiv.innerHTML = `<p class="text-sm text-blue-700"><i class="fas fa-info-circle mr-2"></i>Edit Mata Kuliah - Kode: ${editMataKuliah.kode_mk}</p>`;
+                        }
+                        
+                        // Populate form with edit data
+                        setTimeout(() => {
+                            document.getElementById('nama').value = editMataKuliah.nama_mk;
+                            document.getElementById('sks').value = editMataKuliah.sks;
+                            document.getElementById('semester').value = editMataKuliah.semester;
+                            document.getElementById('prodi').value = editMataKuliah.id_prodi;
+                            document.getElementById('deskripsi').value = editMataKuliah.deskripsi || '';
+                            
+                            // Set dosen if available (from first kelas)
+                            if (editMataKuliah.kelas && editMataKuliah.kelas.length > 0 && editMataKuliah.kelas[0].dosen_pengampu_id) {
+                                document.getElementById('dosen').value = editMataKuliah.kelas[0].dosen_pengampu_id;
+                            }
+                            
+                            // Set angkatan if available
+                            if (editMataKuliah.kelas && editMataKuliah.kelas.length > 0 && editMataKuliah.kelas[0].nama_kelas) {
+                                const angkatan = editMataKuliah.kelas[0].nama_kelas.split('-')[1];
+                                if (angkatan) {
+                                    document.getElementById('angkatan').value = '20' + angkatan;
+                                }
+                            }
+                        }, 100);
+                        
+                        // Update form action - use Laravel route helper
+                        dataForm.action = `{{ url('/dashboard-admin/mk') }}/${editMataKuliah.mk_id}`;
+                        
+                        // Ensure _method input exists for PUT request
+                        let methodInput = dataForm.querySelector('input[name="_method"]');
+                        if (methodInput) {
+                            methodInput.value = 'PUT';
+                        } else {
+                            const input = document.createElement('input');
+                            input.type = 'hidden';
+                            input.name = '_method';
+                            input.value = 'PUT';
+                            dataForm.appendChild(input);
+                        }
+                        
+                        console.log('Edit mode:', {
+                            action: dataForm.action,
+                            method: dataForm.method,
+                            _method: methodInput ? methodInput.value : 'not found'
+                        });
+                        
+                        dataModal.classList.remove('hidden');
                     }
 
                     function populateAngkatanOptions() {
@@ -391,8 +500,8 @@
                         dosenSelect.innerHTML = '<option value="">Pilih Dosen</option>';
                         dosenOptions.forEach(dosen => {
                             const option = document.createElement('option');
-                            option.value = dosen;
-                            option.textContent = dosen;
+                            option.value = dosen.user_id;
+                            option.textContent = dosen.nama_lengkap;
                             dosenSelect.appendChild(option);
                         });
                     }
@@ -616,11 +725,8 @@
                         closeModal.addEventListener('click', closeModalFunc);
                         cancelBtn.addEventListener('click', closeModalFunc);
 
-                        // Form submission
-                        dataForm.addEventListener('submit', function(e) {
-                            // Submit form langsung ke server (real database insert)
-                            // Validasi akan dilakukan di controller
-                        });
+                        // Form submission - Let it submit naturally to the server
+                        // No preventDefault() needed - form will POST to the action URL
 
                         // Edit and delete buttons (delegated)
                         dataTableBody.addEventListener('click', function(e) {
@@ -664,35 +770,10 @@
                         }
                     }
 
-                    // Edit data (Logika MK dibatasi untuk edit di demo)
+                    // Edit data - redirect to edit route
                     function editData(id) {
-                        const item = currentData.find(d => d.id === id);
-                        if (!item) return;
-
-                        isEditing = true;
-                        editId.value = item.id;
-                        dataForm.reset();
-
-                        if (currentChannel === 'matakuliah') {
-                            if (item.kelas.length === 1 && item.kelas >= 'A' && item.kelas <= 'J') {
-                                alert('Edit Mata Kuliah dinonaktifkan. Silakan hapus dan buat ulang.');
-                                isEditing = false;
-                                return;
-                            }
-                        } else if (currentChannel === 'kurikulum') {
-                            modalTitle.textContent = 'Edit Kurikulum';
-                            formContent.innerHTML = formKurikulum;
-
-                            // Fill Kurikulum form
-                            document.getElementById('nama_kurikulum').value = item.nama;
-                            document.getElementById('tahun_berlaku').value = item.tahun_berlaku;
-                            document.getElementById('prodi_kur').value = item.prodi;
-                            document.getElementById('jenjang_kur').value = item.jenjang;
-                            document.getElementById('sks_total').value = item.sks_total;
-                            document.getElementById('deskripsi_kur').value = item.deskripsi;
-                            document.getElementById('status_kur').value = item.status;
-                            dataModal.classList.remove('hidden');
-                        }
+                        // Redirect ke route edit dengan ID mata kuliah
+                        window.location.href = `/dashboard-admin/mk/${id}/edit`;
                     }
 
                     // Save data (add or edit)
@@ -788,11 +869,26 @@
 
                     // Delete data (tidak berubah)
                     function deleteData(id) {
-                        if (confirm('Apakah Anda yakin ingin menghapus data ini?')) {
-                            currentData = currentData.filter(item => item.id !== id);
-                            sampleData[currentChannel] = sampleData[currentChannel].filter(item => item.id !== id);
-                            renderTable();
-                            alert('Data dihapus!');
+                        if (confirm('Apakah Anda yakin ingin menghapus mata kuliah ini beserta semua kelasnya?')) {
+                            // Create form and submit DELETE request
+                            const form = document.createElement('form');
+                            form.method = 'POST';
+                            form.action = `/dashboard-admin/mk/${id}`;
+                            
+                            const csrfInput = document.createElement('input');
+                            csrfInput.type = 'hidden';
+                            csrfInput.name = '_token';
+                            csrfInput.value = '{{ csrf_token() }}';
+                            form.appendChild(csrfInput);
+                            
+                            const methodInput = document.createElement('input');
+                            methodInput.type = 'hidden';
+                            methodInput.name = '_method';
+                            methodInput.value = 'DELETE';
+                            form.appendChild(methodInput);
+                            
+                            document.body.appendChild(form);
+                            form.submit();
                         }
                     }
 
