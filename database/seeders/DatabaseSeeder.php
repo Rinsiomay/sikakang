@@ -277,6 +277,68 @@ class DatabaseSeeder extends Seeder
             'status_mahasiswa' => 'Aktif',
         ]);
 
+        // Mahasiswa Batch 2024
+        $mahasiswaData = [
+            ['nama' => 'PALUPI EKA WARDANI', 'email' => 'palupi@gmail.com', 'nim' => '3337240002'],
+            ['nama' => 'CHANDA KARIMA PASIFIKA', 'email' => 'chanda@gmail.com', 'nim' => '3337240003'],
+            ['nama' => 'KELVIN FEBRIANTO', 'email' => 'kelvin@gmail.com', 'nim' => '3337240004'],
+            ['nama' => 'AFNAN YAZID PRADANA', 'email' => 'afnan@gmail.com', 'nim' => '3337240005'],
+            ['nama' => 'KURNIAWAN SAPUTRA', 'email' => 'kurniawan@gmail.com', 'nim' => '3337240006'],
+            ['nama' => 'MUHAMMAD AKBAR MUZAKI', 'email' => 'akbar@gmail.com', 'nim' => '3337240007'],
+            ['nama' => 'NICO GUNAWAN PURBA', 'email' => 'nico@gmail.com', 'nim' => '3337240008'],
+            ['nama' => 'MOHAMAD FERDIANSYAH', 'email' => 'ferdiansyah@gmail.com', 'nim' => '3337240009'],
+            ['nama' => 'AQIL MAHTUF MAULANA YUSUP', 'email' => 'aqil@gmail.com', 'nim' => '3337240010'],
+            ['nama' => 'ANGGUN RAMADAYANTI', 'email' => 'anggun@gmail.com', 'nim' => '3337240011'],
+            ['nama' => 'RINDRA SATRIATAMA PUTRA', 'email' => 'rindra@gmail.com', 'nim' => '3337240012'],
+            ['nama' => 'DAFFA AHMAD FARHAN', 'email' => 'daffa@gmail.com', 'nim' => '3337240013'],
+            ['nama' => 'FITO ADI NUGRAHA', 'email' => 'fito@gmail.com', 'nim' => '3337240014'],
+            ['nama' => 'VIORENZA AGUSTINA RAHAYU', 'email' => 'viorenza@gmail.com', 'nim' => '3337240015'],
+            ['nama' => 'NADHIF ALFASYA', 'email' => 'nadhif@gmail.com', 'nim' => '3337240016'],
+            ['nama' => 'RISALAH KEISHATORA', 'email' => 'risalah@gmail.com', 'nim' => '3337240017'],
+            ['nama' => 'ABDURROHMAN MUJADID', 'email' => 'abdurrohman@gmail.com', 'nim' => '3337240018'],
+            ['nama' => 'INDAH PURNAMAWATI', 'email' => 'indah@gmail.com', 'nim' => '3337240019'],
+            ['nama' => 'FADHILA NUR RIZQIA', 'email' => 'fadhila@gmail.com', 'nim' => '3337240020'],
+            ['nama' => 'MUHAMMAD HAZIQ FIRDAUS', 'email' => 'haziq@gmail.com', 'nim' => '3337240021'],
+            ['nama' => 'MUHAMMAD RIZKY FAJAR', 'email' => 'rizky@gmail.com', 'nim' => '3337240022'],
+            ['nama' => 'AMELIA PUTRI AQIILAH', 'email' => 'amelia@gmail.com', 'nim' => '3337240023'],
+            ['nama' => 'PANJI SAKA PUTRA PRATAMA', 'email' => 'panji@gmail.com', 'nim' => '3337240024'],
+            ['nama' => 'MUHAMMAD HAFIRST FIRDAUS', 'email' => 'hafirst@gmail.com', 'nim' => '3337240025'],
+            ['nama' => 'LAILATUN NAJMI', 'email' => 'lailatun@gmail.com', 'nim' => '3337240026'],
+            ['nama' => 'FAHMI INAYATUR RAHMAN ATMAJA', 'email' => 'fahmi@gmail.com', 'nim' => '3337240027'],
+            ['nama' => 'ANANTA GALIH MAHARDIKA', 'email' => 'ananta@gmail.com', 'nim' => '3337240028'],
+            ['nama' => 'IHSAN ARIF INDRA SYAHPUTRA', 'email' => 'ihsan@gmail.com', 'nim' => '3337240029'],
+            ['nama' => 'NUR FEBRIYANTI FAHRUDIN', 'email' => 'febriyanti@gmail.com', 'nim' => '3337240030'],
+            ['nama' => 'FAJAR NUGROHO', 'email' => 'fajar@gmail.com', 'nim' => '3337240031'],
+            ['nama' => 'MARCO EKA PUTRA NAIBAHO', 'email' => 'marco@gmail.com', 'nim' => '3337240032'],
+            ['nama' => 'NAUFAL DIMAS FAJRI', 'email' => 'naufal@gmail.com', 'nim' => '3337240033'],
+            ['nama' => 'HILAL RAMDANI', 'email' => 'hilal@gmail.com', 'nim' => '3337240034'],
+            ['nama' => 'GENTA GEMINTANG', 'email' => 'genta@gmail.com', 'nim' => '3337240035'],
+            ['nama' => 'RIZAN ABKI CHAERULLAH', 'email' => 'rizan@gmail.com', 'nim' => '3337240036'],
+            ['nama' => 'DIAN KAMILAH', 'email' => 'dian@gmail.com', 'nim' => '3337240037'],
+            ['nama' => 'MEYTHA REYANI SIRAYAN', 'email' => 'meytha@gmail.com', 'nim' => '3337240038'],
+            ['nama' => 'MUHAMMAD RIDHO AL GHIFAHRI', 'email' => 'ridho@gmail.com', 'nim' => '3337240039'],
+            ['nama' => 'ABDUR RACHMAN', 'email' => 'rachman@gmail.com', 'nim' => '3337240040'],
+            ['nama' => 'POPPY NOVITA', 'email' => 'poppy@gmail.com', 'nim' => '3337240041'],
+        ];
+
+        foreach ($mahasiswaData as $index => $data) {
+            $mhs = User::create([
+                'nama_lengkap' => $data['nama'],
+                'email' => $data['email'],
+                'password' => Hash::make('password123'),
+                'role' => 'mahasiswa',
+            ]);
+
+            MahasiswaDetail::create([
+                'user_id' => $mhs->user_id,
+                'nim' => $data['nim'],
+                'dosen_pa_id' => $dosen1->user_id, // Assign to first dosen
+                'angkatan' => '2024',
+                'program_studi' => 'Informatika',
+                'status_mahasiswa' => 'Aktif',
+            ]);
+        }
+
         // Mata Kuliah akan ditambahkan oleh admin melalui dashboard
         
         // Create Jenis Surat
