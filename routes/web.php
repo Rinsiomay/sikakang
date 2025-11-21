@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DosenController;
 use App\Http\Controllers\FakultasController;
 use App\Http\Controllers\HasilStudiController;
+use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\KrsController;
 use App\Http\Controllers\MataKuliahController;
 use App\Http\Controllers\MhsController;
@@ -56,9 +57,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/krs/store', [KrsController::class, 'store'])->name('krs.store');
         Route::delete('/krs/{id}', [KrsController::class, 'destroy'])->name('krs.destroy');
         Route::get('/hasil', [HasilStudiController::class, 'index']);
-        Route::get('/jadwal', function () {
-            return view('Dashboard.jadwal_kuliah');
-        });
+        Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
 
         // Routes untuk detail jadwal
         Route::get('/jadwal/detail/{kode}', function ($kode) {
